@@ -14,10 +14,13 @@ abstract class _HomeViewModelBase with Store {
 
   @action
   Future<void> scanImage() async {
-    _changeScanningStatuts();
-    _producedText = await OcrService.instance.getTextFromImage(_selectedImage);
-    _updateScannedText(_producedText);
-    _changeScanningStatuts();
+    if (_selectedImage != null) {
+      _changeScanningStatuts();
+      _producedText =
+          await OcrService.instance.getTextFromImage(_selectedImage);
+      _updateScannedText(_producedText);
+      _changeScanningStatuts();
+    }
   }
 
   @action
