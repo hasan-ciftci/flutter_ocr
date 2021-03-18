@@ -14,10 +14,14 @@ dependencies:
   image_picker: 0.6.7+22
   firebase_ml_vision: any
   firebase_core: any
+  mobx: ^1.2.1+4
+  flutter_mobx: ^1.1.0+2
+  mobx_codegen: ^1.1.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner:
 
 
 flutter:

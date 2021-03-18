@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
-import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_ocr/view/viewmodel/home_view_model.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -10,8 +8,13 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  String text = "";
-  File image;
+  HomeViewModel viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = HomeViewModel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +23,32 @@ class _HomeViewState extends State<HomeView> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          image != null ? Image.file(image) : Text("no image"),
+          Observer(
+            builder: (BuildContext context) {
+              return viewModel.image != null
+                  ? Image.file(viewModel.image)
+                  : Text("no image");
+            },
+          ),
           ElevatedButton(
             child: Text("Pick Image"),
             onPressed: () async {
-              var file = await ImagePickerService.instance.getImageFile();
-              setState(() {
-                image = file;
-                text = "";
-              });
-              //final imageFromBytes = await image.readAsBytes();
-              final myText = await OcrService.instance.getTextFromImage(file);
-              setState(() {
-                text = myText;
-              });
+              viewModel.getImageFile();
             },
           ),
-          Text(text),
+          ElevatedButton(
+            child: Text("Scan Image"),
+            onPressed: () async {
+              viewModel.scanImage();
+            },
+          ),
+          Observer(
+            builder: (BuildContext context) {
+              return viewModel.isScanning
+                  ? Center(child: CircularProgressIndicator())
+                  : Text(viewModel.scannedText ?? "");
+            },
+          )
         ],
       ),
     );
