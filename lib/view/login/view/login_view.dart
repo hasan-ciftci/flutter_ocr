@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/core/init/constants/navigation_root_name_constants.dart';
+import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -25,7 +27,10 @@ class _LoginViewState extends State<LoginView> {
 
   ElevatedButton buildLoginButton() {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        NavigationService.instance
+            .navigateToPage(path: NavigationConstants.HOME_VIEW);
+      },
       child: Text("Giriş"),
     );
   }
