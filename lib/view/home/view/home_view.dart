@@ -61,9 +61,18 @@ class _HomeViewState extends State<HomeView> {
       padding: EdgeInsets.all(8.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: Text(
-          viewModel.scannedText ?? "Scan a image.",
-          textAlign: TextAlign.center,
+        child: Column(
+          children: [
+            viewModel.locationModel != null
+                ? Text(viewModel.locationModel.latitude.toString() +
+                    " , " +
+                    viewModel.locationModel.longitude.toString())
+                : Text("Lokasyon belirlenemedi"),
+            Text(
+              viewModel.scannedText ?? "Scan a image.",
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

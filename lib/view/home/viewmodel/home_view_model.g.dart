@@ -54,6 +54,21 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     });
   }
 
+  final _$locationModelAtom = Atom(name: '_HomeViewModelBase.locationModel');
+
+  @override
+  LocationModel get locationModel {
+    _$locationModelAtom.reportRead();
+    return super.locationModel;
+  }
+
+  @override
+  set locationModel(LocationModel value) {
+    _$locationModelAtom.reportWrite(value, super.locationModel, () {
+      super.locationModel = value;
+    });
+  }
+
   final _$scanImageAsyncAction = AsyncAction('_HomeViewModelBase.scanImage');
 
   @override
@@ -121,7 +136,8 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     return '''
 isScanning: ${isScanning},
 scannedText: ${scannedText},
-image: ${image}
+image: ${image},
+locationModel: ${locationModel}
     ''';
   }
 }

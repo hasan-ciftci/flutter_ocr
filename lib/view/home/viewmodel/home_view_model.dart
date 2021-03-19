@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
+import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
+import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:mobx/mobx.dart';
 
 part 'home_view_model.g.dart';
@@ -19,6 +21,7 @@ abstract class _HomeViewModelBase with Store {
     if (result == true) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
+      _getPosition();
       scanImageOffline();
     } else {
       await scanImageOffline();
@@ -40,6 +43,9 @@ abstract class _HomeViewModelBase with Store {
 
   @observable
   File image;
+
+  @observable
+  LocationModel locationModel;
 
   @action
   void _changeScanningStatuts() {
@@ -69,6 +75,26 @@ abstract class _HomeViewModelBase with Store {
           await OcrService.instance.getTextFromImage(_selectedImage);
       _updateScannedText(_producedText);
       _changeScanningStatuts();
+    }
+  }
+
+  Future _getPosition() async {
+    try {
+      final position = await LocationService.instance.determinePosition();
+      if (position != null) {
+        locationModel = LocationModel(
+            latitude: position.longitude,
+            longitude: position.longitude,
+            altitude: position.altitude,
+            heading: position.heading,
+            speed: position.speed,
+            speedAccuracy: position.speedAccuracy,
+            timestamp: position.timestamp,
+            floor: position.floor,
+            isMocked: position.isMocked);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

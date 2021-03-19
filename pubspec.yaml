@@ -18,6 +18,7 @@ dependencies:
   flutter_mobx: ^1.1.0+2
   mobx_codegen: ^1.1.2
   data_connection_checker: ^0.3.4
+  geolocator: ^6.2.1
 
 dev_dependencies:
   flutter_test:
