@@ -18,6 +18,8 @@ abstract class _HomeViewModelBase with Store {
     bool result = await DataConnectionChecker().hasConnection;
     if (result == true) {
       //Scan Image with API
+      //TODO:IMPLEMENT API CONNECTION
+      scanImageOffline();
     } else {
       await scanImageOffline();
     }
