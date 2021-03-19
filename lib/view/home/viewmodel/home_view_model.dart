@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:mobx/mobx.dart';
@@ -14,12 +15,11 @@ abstract class _HomeViewModelBase with Store {
 
   @action
   Future<void> scanImage() async {
-    if (_selectedImage != null) {
-      _changeScanningStatuts();
-      _producedText =
-          await OcrService.instance.getTextFromImage(_selectedImage);
-      _updateScannedText(_producedText);
-      _changeScanningStatuts();
+    bool result = await DataConnectionChecker().hasConnection;
+    if (result == true) {
+      //Scan Image with API
+    } else {
+      await scanImageOffline();
     }
   }
 
@@ -58,5 +58,15 @@ abstract class _HomeViewModelBase with Store {
   void _prepareToNewFile() {
     image = null;
     scannedText = null;
+  }
+
+  Future<void> scanImageOffline() async {
+    if (_selectedImage != null) {
+      _changeScanningStatuts();
+      _producedText =
+          await OcrService.instance.getTextFromImage(_selectedImage);
+      _updateScannedText(_producedText);
+      _changeScanningStatuts();
+    }
   }
 }
