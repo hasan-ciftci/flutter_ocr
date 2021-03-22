@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/components/route_not_found_widget.dart';
-import 'package:flutter_ocr/core/init/constants/navigation_root_name_constants.dart';
+import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/view/login/view/login_view.dart';
 
 import '../../../view/home/view/home_view.dart';
