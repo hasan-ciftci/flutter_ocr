@@ -1,5 +1,7 @@
 import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
+import 'package:flutter_ocr/core/constants/preferences_keys.dart';
+import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 import 'package:flutter_ocr/view/login/model/login_response_model.dart';
 import 'package:flutter_ocr/view/login/model/user_model.dart';
 
@@ -25,6 +27,7 @@ class LoginService implements ILoginService {
   }
 
   saveTokenToPreferences(String token) async {
-    //TODO: BUILD SHARED PREFS SERVICE
+    await PreferencesManager.instance
+        .setStringValue(PreferencesKeys.TOKEN, token);
   }
 }

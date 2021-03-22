@@ -20,6 +20,7 @@ dependencies:
   data_connection_checker: ^0.3.4
   geolocator: ^6.2.1
   dio: ^3.0.10
+  shared_preferences: ^2.0.5
 
 dev_dependencies:
   flutter_test:
