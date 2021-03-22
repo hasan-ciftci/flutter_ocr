@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
@@ -14,6 +16,14 @@ class HomeViewModel = _HomeViewModelBase with _$HomeViewModel;
 abstract class _HomeViewModelBase with Store {
   String _producedText;
   File _selectedImage;
+  TextEditingController editingController;
+  FocusNode focusNode;
+  GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
+
+  init() {
+    editingController = TextEditingController();
+    focusNode = FocusNode();
+  }
 
   @action
   Future<void> scanImage() async {
@@ -29,17 +39,38 @@ abstract class _HomeViewModelBase with Store {
   }
 
   @action
+  void updateEditableText(value) {
+    scannedText = value;
+  }
+
+  void saveLicensePlate() {
+    //TODO: IMPLEMENT SAVING OPERATIONS
+
+    ScaffoldMessenger.of(scaffoldState.currentContext).showSnackBar(
+      SnackBar(
+        elevation: 10,
+        duration: Duration(milliseconds: 1500),
+        backgroundColor: Colors.green,
+        content: Text("Başarılı"),
+      ),
+    );
+  }
+
+  @action
   Future<void> getImageFile() async {
     _prepareToNewFile();
     _selectedImage = await ImagePickerService.instance.getImageFile();
     _updateSelectedImage(_selectedImage);
+    if (_selectedImage != null) {
+      scanImage();
+    }
   }
 
   @observable
   bool isScanning = false;
 
   @observable
-  String scannedText = "";
+  String scannedText;
 
   @observable
   File image;
@@ -55,6 +86,7 @@ abstract class _HomeViewModelBase with Store {
   @action
   void _updateScannedText(String producedText) {
     scannedText = producedText;
+    editingController.text = scannedText;
   }
 
   @action

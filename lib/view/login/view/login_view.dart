@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/rectangle_text_form_field.dart';
 import 'package:flutter_ocr/core/constants/app_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
+import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/login/viewmodel/login_view_model.dart';
 
 import '../../../core/components/custom_elevated_button.dart';
@@ -24,44 +25,47 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        extendBodyBehindAppBar: false,
-        resizeToAvoidBottomInset: false,
-        backgroundColor: ColorConstants.ISPARK_YELLOW,
-        appBar: buildAppBar(
-            appBarText: ApplicationConstants.COMPANY_NAME,
-            appBarTextColor: ColorConstants.ISPARK_YELLOW,
-            appBarColor: ColorConstants.ISPARK_BLACK),
-        body: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            double height = constraints.maxHeight;
-            return Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: height * .2),
-                      buildTopic(),
-                      SizedBox(height: height * .05),
-                      buildLoginForm(),
-                      SizedBox(height: height * .05),
-                      Observer(
-                        builder: (BuildContext context) {
-                          return buildLoginButton();
-                        },
-                      ),
-                    ],
+    return Container(
+      decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
+      child: Scaffold(
+          extendBodyBehindAppBar: false,
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          appBar: buildAppBar(
+              appBarText: ApplicationConstants.COMPANY_NAME,
+              appBarTextColor: ColorConstants.ISPARK_YELLOW,
+              appBarColor: ColorConstants.ISPARK_BLACK),
+          body: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              double height = constraints.maxHeight;
+              return Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: height * .2),
+                        buildTopic(),
+                        SizedBox(height: height * .05),
+                        buildLoginForm(),
+                        SizedBox(height: height * .05),
+                        Observer(
+                          builder: (BuildContext context) {
+                            return buildLoginButton();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        ));
+              );
+            },
+          )),
+    );
   }
 
   AppBar buildAppBar(

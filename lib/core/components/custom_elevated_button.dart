@@ -5,13 +5,15 @@ class CustomElevatedButton extends StatelessWidget {
   final String buttonText;
   final Color buttonColor;
   final Color buttonTextColor;
+  final IconData icon;
 
   const CustomElevatedButton(
       {Key key,
       @required this.onPressed,
       @required this.buttonText,
       this.buttonColor,
-      this.buttonTextColor})
+      this.buttonTextColor,
+      this.icon})
       : super(key: key);
 
   @override
@@ -25,11 +27,20 @@ class CustomElevatedButton extends StatelessWidget {
           },
         ),
       ),
-      child: Text(
-        buttonText,
-        style: TextStyle(
-            color: buttonTextColor ?? Colors.white,
-            fontWeight: FontWeight.bold),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon != null ? Icon(icon) : SizedBox(),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            buttonText,
+            style: TextStyle(
+                color: buttonTextColor ?? Colors.white,
+                fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
       onPressed: onPressed,
     );
