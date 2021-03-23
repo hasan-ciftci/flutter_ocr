@@ -5,9 +5,9 @@ class LocationModel {
   double heading;
   double speed;
   double speedAccuracy;
-  DateTime timestamp;
+  String timestamp;
   int floor;
-  bool isMocked;
+  int isMocked;
 
   LocationModel(
       {this.latitude,
@@ -29,7 +29,7 @@ class LocationModel {
     speedAccuracy = json['speedAccuracy'];
     timestamp = json['timestamp'];
     floor = json['floor'];
-    isMocked = json['isMocked'];
+    isMocked = json['isMocked'] == true ? 1 : 0;
   }
 
   Map<String, dynamic> toJson() {

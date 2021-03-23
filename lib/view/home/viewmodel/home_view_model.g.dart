@@ -12,15 +12,15 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   final _$isScanningAtom = Atom(name: '_HomeViewModelBase.isScanning');
 
   @override
-  bool get isScanning {
+  bool get isLoading {
     _$isScanningAtom.reportRead();
-    return super.isScanning;
+    return super.isLoading;
   }
 
   @override
-  set isScanning(bool value) {
-    _$isScanningAtom.reportWrite(value, super.isScanning, () {
-      super.isScanning = value;
+  set isLoading(bool value) {
+    _$isScanningAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
     });
   }
 
@@ -88,11 +88,11 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
       ActionController(name: '_HomeViewModelBase');
 
   @override
-  void _changeScanningStatuts() {
+  void _changeLoadingStatus() {
     final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
         name: '_HomeViewModelBase._changeScanningStatuts');
     try {
-      return super._changeScanningStatuts();
+      return super._changeLoadingStatus();
     } finally {
       _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
     }
@@ -134,7 +134,7 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   @override
   String toString() {
     return '''
-isScanning: ${isScanning},
+isScanning: ${isLoading},
 scannedText: ${scannedText},
 image: ${image},
 locationModel: ${locationModel}

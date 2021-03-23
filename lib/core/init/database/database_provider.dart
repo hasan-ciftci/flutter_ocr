@@ -1,8 +1,7 @@
+import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'database_model.dart';
-
-abstract class DatabaseProvider<T extends DatabaseModel> {
+abstract class DatabaseProvider<T extends RecordModel> {
   Future open();
   Future<List<T>> getRecordList(String username);
   Future<bool> updateRecord(int id, T model);

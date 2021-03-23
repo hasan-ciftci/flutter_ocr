@@ -1,34 +1,52 @@
-import 'package:flutter_ocr/view/home/model/position_model.dart';
-
-import '../../../core/init/database/database_model.dart';
-
-class RecordModel extends DatabaseModel<RecordModel> {
-  LocationModel location;
+class RecordModel {
+  double latitude;
+  double longitude;
+  double altitude;
+  double heading;
+  double speed;
+  double speedAccuracy;
+  int floor;
+  int isMocked;
   String username;
   String plate;
 
-  RecordModel({this.location, this.username, this.plate});
+  RecordModel(
+      {this.latitude,
+      this.longitude,
+      this.altitude,
+      this.heading,
+      this.speed,
+      this.speedAccuracy,
+      this.floor,
+      this.isMocked,
+      this.username,
+      this.plate});
 
   RecordModel.fromJson(Map<String, dynamic> json) {
-    location = json['location'] != null
-        ? new LocationModel.fromJson(json['location'])
-        : null;
+    latitude = json['latitude'];
+    longitude = json['longitude'];
+    altitude = json['altitude'];
+    heading = json['heading'];
+    speed = json['speed'];
+    speedAccuracy = json['speedAccuracy'];
+    floor = json['floor'];
+    isMocked = json['isMocked'];
     username = json['username'];
     plate = json['plate'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.location != null) {
-      data['location'] = this.location.toJson();
-    }
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
+    data['altitude'] = this.altitude;
+    data['heading'] = this.heading;
+    data['speed'] = this.speed;
+    data['speedAccuracy'] = this.speedAccuracy;
+    data['floor'] = this.floor;
+    data['isMocked'] = this.isMocked;
     data['username'] = this.username;
     data['plate'] = this.plate;
     return data;
-  }
-
-  @override
-  RecordModel fromJson(Map<String, dynamic> json) {
-    return RecordModel.fromJson(json);
   }
 }

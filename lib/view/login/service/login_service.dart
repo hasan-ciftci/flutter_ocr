@@ -25,6 +25,10 @@ class LoginService implements ILoginService {
           .navigateToPage(path: NavigationConstants.HOME_VIEW);
     }
     */
+    //TODO: CREATE MOCK DATA FOR SAVING PLATE PROCESS
+    PreferencesManager.instance
+        .setStringValue(PreferencesKeys.USER_NAME, model.username);
+
     NavigationService.instance
         .navigateToPage(path: NavigationConstants.HOME_VIEW);
   }

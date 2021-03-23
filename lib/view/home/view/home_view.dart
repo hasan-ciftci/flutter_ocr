@@ -51,7 +51,7 @@ class _HomeViewState extends State<HomeView> {
   Observer buildScannedImageText() {
     return Observer(
       builder: (BuildContext context) {
-        return viewModel.isScanning
+        return viewModel.isLoading
             ? buildProgressIndicator()
             : buildOcrResultText();
       },

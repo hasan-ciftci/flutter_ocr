@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/core/constants/preferences_keys.dart';
 import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
+import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:flutter_ocr/view/home/model/record_database_provider.dart';
+import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:mobx/mobx.dart';
 
 part 'home_view_model.g.dart';
@@ -48,9 +51,34 @@ abstract class _HomeViewModelBase with Store {
     scannedText = value;
   }
 
-  void saveLicensePlate() {
-    //TODO: IMPLEMENT SAVING OPERATIONS
+  Future<void> getLicensePlates() async {
+    final result = await recordDataBaseProvider.getRecordList(
+        PreferencesManager.instance.getStringValue(PreferencesKeys.USER_NAME));
+    return result;
+  }
+
+  Future<void> saveLicensePlate() async {
+    //TODO: IMPLEMENT SAVING OPERATIONS FOR API
+    _changeLoadingStatus();
+    await recordDataBaseProvider.insertRecord(
+      RecordModel(
+        latitude: locationModel?.latitude,
+        longitude: locationModel?.longitude,
+        altitude: locationModel?.altitude,
+        speedAccuracy: locationModel?.speedAccuracy,
+        heading: locationModel?.heading,
+        plate: scannedText,
+        speed: locationModel?.speed,
+        isMocked: locationModel?.isMocked,
+        floor: locationModel?.floor,
+        username: PreferencesManager.instance
+            .getStringValue(PreferencesKeys.USER_NAME),
+      ),
+    );
+    _changeLoadingStatus();
+
     _prepareToNewFile();
+
     ScaffoldMessenger.of(scaffoldState.currentContext).showSnackBar(
       SnackBar(
         elevation: 10,
@@ -72,7 +100,7 @@ abstract class _HomeViewModelBase with Store {
   }
 
   @observable
-  bool isScanning = false;
+  bool isLoading = false;
 
   @observable
   String scannedText;
@@ -84,8 +112,8 @@ abstract class _HomeViewModelBase with Store {
   LocationModel locationModel;
 
   @action
-  void _changeScanningStatuts() {
-    isScanning = !isScanning;
+  void _changeLoadingStatus() {
+    isLoading = !isLoading;
   }
 
   @action
@@ -108,11 +136,11 @@ abstract class _HomeViewModelBase with Store {
 
   Future<void> scanImageOffline() async {
     if (_selectedImage != null) {
-      _changeScanningStatuts();
+      _changeLoadingStatus();
       _producedText =
           await OcrService.instance.getTextFromImage(_selectedImage);
       _updateScannedText(_producedText);
-      _changeScanningStatuts();
+      _changeLoadingStatus();
     }
   }
 
@@ -127,9 +155,9 @@ abstract class _HomeViewModelBase with Store {
             heading: position.heading,
             speed: position.speed,
             speedAccuracy: position.speedAccuracy,
-            timestamp: position.timestamp,
+            timestamp: DateTime.now().toString(),
             floor: position.floor,
-            isMocked: position.isMocked);
+            isMocked: position.isMocked == true ? 1 : 0);
       }
     } catch (e) {
       print(e);
