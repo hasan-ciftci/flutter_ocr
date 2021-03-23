@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/rectangle_text_form_field.dart';
 import 'package:flutter_ocr/core/constants/app_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
@@ -65,20 +66,6 @@ class _LoginViewState extends State<LoginView> {
               );
             },
           )),
-    );
-  }
-
-  AppBar buildAppBar(
-      {@required String appBarText,
-      @required Color appBarTextColor,
-      @required Color appBarColor}) {
-    return AppBar(
-      backgroundColor: appBarColor,
-      centerTitle: true,
-      title: Text(
-        appBarText,
-        style: TextStyle(color: appBarTextColor),
-      ),
     );
   }
 

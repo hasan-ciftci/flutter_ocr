@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/bold_header_text.dart';
+import 'package:flutter_ocr/core/components/custom_appbar.dart';
+import 'package:flutter_ocr/core/components/custom_drawer.dart';
 import 'package:flutter_ocr/core/components/custom_elevated_button.dart';
+import 'package:flutter_ocr/core/constants/app_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/view/home/viewmodel/home_view_model.dart';
 
@@ -27,6 +30,11 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
       child: Scaffold(
+        appBar: buildAppBar(
+            appBarText: ApplicationConstants.COMPANY_NAME,
+            appBarTextColor: ColorConstants.ISPARK_YELLOW,
+            appBarColor: ColorConstants.ISPARK_BLACK),
+        drawer: buildDrawer(context),
         key: viewModel.scaffoldState,
         backgroundColor: Colors.transparent,
         body: SafeArea(
@@ -142,6 +150,16 @@ class _HomeViewState extends State<HomeView> {
           " , " +
           viewModel.locationModel.longitude.toString(),
       style: TextStyle(color: ColorConstants.ISPARK_BLACK),
+    );
+  }
+
+  CustomDrawer buildDrawer(BuildContext context) {
+    return CustomDrawer(
+      firstFunction: viewModel.getLicensePlates,
+      drawerHeaderName: 'PARXLAB',
+      firstOptionName: 'Kayıtlar',
+      firstIconData: Icons.save,
+      logOutFunction: viewModel.logout,
     );
   }
 }

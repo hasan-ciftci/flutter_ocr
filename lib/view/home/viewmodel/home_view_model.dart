@@ -51,10 +51,13 @@ abstract class _HomeViewModelBase with Store {
     scannedText = value;
   }
 
-  Future<void> getLicensePlates() async {
+  getLicensePlates() async {
+    //TODO:PUSH RECORDS PAGE
     final result = await recordDataBaseProvider.getRecordList(
         PreferencesManager.instance.getStringValue(PreferencesKeys.USER_NAME));
-    return result;
+    result.forEach((element) {
+      print(element.toJson());
+    });
   }
 
   Future<void> saveLicensePlate() async {
@@ -162,5 +165,9 @@ abstract class _HomeViewModelBase with Store {
     } catch (e) {
       print(e);
     }
+  }
+
+  logout() {
+    //TODO: IMPLEMENT LOGOUT
   }
 }
