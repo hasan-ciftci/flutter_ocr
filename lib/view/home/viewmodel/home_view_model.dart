@@ -45,7 +45,7 @@ abstract class _HomeViewModelBase with Store {
 
   void saveLicensePlate() {
     //TODO: IMPLEMENT SAVING OPERATIONS
-
+    _prepareToNewFile();
     ScaffoldMessenger.of(scaffoldState.currentContext).showSnackBar(
       SnackBar(
         elevation: 10,
@@ -98,6 +98,7 @@ abstract class _HomeViewModelBase with Store {
   void _prepareToNewFile() {
     image = null;
     scannedText = null;
+    locationModel = null;
   }
 
   Future<void> scanImageOffline() async {
