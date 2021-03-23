@@ -4,7 +4,7 @@ import 'package:flutter_ocr/view/login/view/login_view.dart';
 import 'core/init/navigation/navigation_routes.dart';
 import 'core/init/navigation/navigation_service.dart';
 
-void main() {
+Future<void> main() async {
   runApp(FlutterOcr());
 }
 

@@ -7,6 +7,7 @@ import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
+import 'package:flutter_ocr/view/home/model/record_database_provider.dart';
 import 'package:mobx/mobx.dart';
 
 part 'home_view_model.g.dart';
@@ -20,9 +21,13 @@ abstract class _HomeViewModelBase with Store {
   FocusNode focusNode;
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
 
+  RecordDataBaseProvider recordDataBaseProvider;
+
   init() {
     editingController = TextEditingController();
     focusNode = FocusNode();
+    recordDataBaseProvider = RecordDataBaseProvider();
+    recordDataBaseProvider.open();
   }
 
   @action
