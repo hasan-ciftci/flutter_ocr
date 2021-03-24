@@ -5,7 +5,6 @@ class LocationModel {
   double heading;
   double speed;
   double speedAccuracy;
-  String timestamp;
   int floor;
   int isMocked;
 
@@ -16,7 +15,6 @@ class LocationModel {
       this.heading,
       this.speed,
       this.speedAccuracy,
-      this.timestamp,
       this.floor,
       this.isMocked});
 
@@ -27,7 +25,6 @@ class LocationModel {
     heading = json['heading'];
     speed = json['speed'];
     speedAccuracy = json['speedAccuracy'];
-    timestamp = json['timestamp'];
     floor = json['floor'];
     isMocked = json['isMocked'] == true ? 1 : 0;
   }
@@ -40,7 +37,6 @@ class LocationModel {
     data['heading'] = this.heading;
     data['speed'] = this.speed;
     data['speedAccuracy'] = this.speedAccuracy;
-    data['timestamp'] = this.timestamp;
     data['floor'] = this.floor;
     data['isMocked'] = this.isMocked;
     return data;

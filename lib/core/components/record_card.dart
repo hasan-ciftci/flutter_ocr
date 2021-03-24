@@ -45,19 +45,9 @@ class RecordCard extends StatelessWidget {
   Text buildDateText() {
     return Text(
       date,
+      textAlign: TextAlign.center,
       style: TextStyle(
-          shadows: [
-            Shadow(
-              offset: Offset(2.0, 0.0),
-              blurRadius: 3.0,
-              color: Colors.white,
-            ),
-            Shadow(
-              offset: Offset(0.0, 5.0),
-              blurRadius: 8.0,
-              color: Colors.black38,
-            ),
-          ],
+          shadows: StyleConstants.kTextDoubleShadow,
           color: ColorConstants.ISPARK_BLACK,
           fontWeight: FontWeight.bold,
           fontSize: 16),

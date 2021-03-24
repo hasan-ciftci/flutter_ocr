@@ -1,8 +1,17 @@
-import 'package:flutter_ocr/core/init/database/database_provider.dart';
+import 'package:flutter_ocr/core/init/database/IDatabaseService.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:sqflite/sqflite.dart';
 
-class RecordDataBaseProvider extends DatabaseProvider<RecordModel> {
+class DatabaseService extends DatabaseProvider<RecordModel> {
+  static DatabaseService _instance;
+
+  static DatabaseService get instance {
+    _instance ??= DatabaseService._init();
+    return _instance;
+  }
+
+  DatabaseService._init();
+
   String _databaseName = "recordsdb";
   String _tableName = "records";
   int _version = 1;
@@ -21,6 +30,7 @@ class RecordDataBaseProvider extends DatabaseProvider<RecordModel> {
   String columnTimestamp = "timeStamp";
   String columnFloor = "floor";
   String columnIsMocked = "isMocked";
+  String columntimestamp = "timestamp";
 
   @override
   Future<List<RecordModel>> getRecordList(String username) async {
@@ -70,8 +80,8 @@ class RecordDataBaseProvider extends DatabaseProvider<RecordModel> {
     await db.execute(
       '''CREATE TABLE IF NOT EXISTS $_tableName (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT, 
-        $columnUsername VARCHAR(20),
-        $columnPlate VARCHAR(20),
+        $columnUsername VARCHAR(100),
+        $columnPlate VARCHAR(100),
         $columnDate datetime default current_timestamp,
         $columnLatitude DOUBLE,
         $columnLongitude DOUBLE,
@@ -80,7 +90,8 @@ class RecordDataBaseProvider extends DatabaseProvider<RecordModel> {
         $columnSpeed DOUBLE,
         $columnSpeedAccuracy DOUBLE,
         $columnFloor INTEGER, 
-        $columnIsMocked INTEGER )
+        $columnIsMocked INTEGER,
+        $columnTimestamp VARCHAR(100) )
         ''',
     );
   }

@@ -9,18 +9,21 @@ class RecordModel {
   int isMocked;
   String username;
   String plate;
+  String timestamp;
 
-  RecordModel(
-      {this.latitude,
-      this.longitude,
-      this.altitude,
-      this.heading,
-      this.speed,
-      this.speedAccuracy,
-      this.floor,
-      this.isMocked,
-      this.username,
-      this.plate});
+  RecordModel({
+    this.latitude,
+    this.longitude,
+    this.altitude,
+    this.heading,
+    this.speed,
+    this.speedAccuracy,
+    this.floor,
+    this.isMocked,
+    this.username,
+    this.plate,
+    this.timestamp,
+  });
 
   RecordModel.fromJson(Map<String, dynamic> json) {
     latitude = json['latitude'];
@@ -33,6 +36,7 @@ class RecordModel {
     isMocked = json['isMocked'];
     username = json['username'];
     plate = json['plate'];
+    timestamp = json['timeStamp'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +51,7 @@ class RecordModel {
     data['isMocked'] = this.isMocked;
     data['username'] = this.username;
     data['plate'] = this.plate;
+    data['timeStamp'] = this.timestamp;
     return data;
   }
 }

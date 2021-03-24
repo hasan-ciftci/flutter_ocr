@@ -5,13 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/constants/preferences_keys.dart';
+import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
-import 'package:flutter_ocr/view/home/model/record_database_provider.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:mobx/mobx.dart';
 
@@ -26,12 +26,12 @@ abstract class _HomeViewModelBase with Store {
   FocusNode focusNode;
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
 
-  RecordDataBaseProvider recordDataBaseProvider;
+  DatabaseService recordDataBaseProvider;
 
   init() {
     editingController = TextEditingController();
     focusNode = FocusNode();
-    recordDataBaseProvider = RecordDataBaseProvider();
+    recordDataBaseProvider = DatabaseService.instance;
     recordDataBaseProvider.open();
   }
 
@@ -67,6 +67,7 @@ abstract class _HomeViewModelBase with Store {
         speed: locationModel?.speed,
         isMocked: locationModel?.isMocked,
         floor: locationModel?.floor,
+        timestamp: DateTime.now().toString(),
         username: PreferencesManager.instance
             .getStringValue(PreferencesKeys.USER_NAME),
       ),
@@ -151,7 +152,6 @@ abstract class _HomeViewModelBase with Store {
             heading: position.heading,
             speed: position.speed,
             speedAccuracy: position.speedAccuracy,
-            timestamp: DateTime.now().toString(),
             floor: position.floor,
             isMocked: position.isMocked == true ? 1 : 0);
       }
