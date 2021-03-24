@@ -22,13 +22,7 @@ class RecordCard extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              id.toString() + ".",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  shadows: StyleConstants.kTextDoubleShadow,
-                  color: ColorConstants.ISPARK_BLUE_DARK),
-            ),
+            child: buildId(),
           ),
           Expanded(
             flex: 3,
@@ -40,6 +34,16 @@ class RecordCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Text buildId() {
+    return Text(
+      id.toString() + ".",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+          shadows: StyleConstants.kTextDoubleShadow,
+          color: ColorConstants.ISPARK_BLUE_DARK),
     );
   }
 
