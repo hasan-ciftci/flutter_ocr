@@ -5,11 +5,13 @@ import 'package:flutter_ocr/core/constants/style_constants.dart';
 class RecordCard extends StatelessWidget {
   final String plate;
   final String date;
+  final int id;
 
   const RecordCard({
     Key key,
     @required this.plate,
     @required this.date,
+    @required this.id,
   }) : super(key: key);
 
   @override
@@ -19,6 +21,15 @@ class RecordCard extends StatelessWidget {
       decoration: StyleConstants.kRecordCardDecoration,
       child: Row(
         children: [
+          Expanded(
+            child: Text(
+              id.toString() + ".",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  shadows: StyleConstants.kTextDoubleShadow,
+                  color: ColorConstants.ISPARK_BLUE_DARK),
+            ),
+          ),
           Expanded(
             flex: 3,
             child: buildPlateText(),

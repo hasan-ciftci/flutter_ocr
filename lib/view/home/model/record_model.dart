@@ -1,4 +1,5 @@
 class RecordModel {
+  int id;
   double latitude;
   double longitude;
   double altitude;
@@ -11,19 +12,19 @@ class RecordModel {
   String plate;
   String timestamp;
 
-  RecordModel({
-    this.latitude,
-    this.longitude,
-    this.altitude,
-    this.heading,
-    this.speed,
-    this.speedAccuracy,
-    this.floor,
-    this.isMocked,
-    this.username,
-    this.plate,
-    this.timestamp,
-  });
+  RecordModel(
+      {this.latitude,
+      this.longitude,
+      this.altitude,
+      this.heading,
+      this.speed,
+      this.speedAccuracy,
+      this.floor,
+      this.isMocked,
+      this.username,
+      this.plate,
+      this.timestamp,
+      this.id});
 
   RecordModel.fromJson(Map<String, dynamic> json) {
     latitude = json['latitude'];
@@ -37,6 +38,7 @@ class RecordModel {
     username = json['username'];
     plate = json['plate'];
     timestamp = json['timeStamp'];
+    id = json["id"];
   }
 
   Map<String, dynamic> toJson() {
