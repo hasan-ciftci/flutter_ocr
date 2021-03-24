@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/components/route_not_found_widget.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/view/login/view/login_view.dart';
+import 'package:flutter_ocr/view/records/view/records_view.dart';
 
 import '../../../view/home/view/home_view.dart';
 
@@ -21,6 +22,10 @@ class NavigationRoutes {
       case NavigationConstants.HOME_VIEW:
         return normalNavigate(
           HomeView(),
+        );
+      case NavigationConstants.RECORDS_VIEW:
+        return normalNavigate(
+          RecordsView(),
         );
       default:
         return normalNavigate(

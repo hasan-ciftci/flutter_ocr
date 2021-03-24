@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/constants/preferences_keys.dart';
 import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
+import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
@@ -49,15 +51,6 @@ abstract class _HomeViewModelBase with Store {
   @action
   void updateEditableText(value) {
     scannedText = value;
-  }
-
-  getLicensePlates() async {
-    //TODO:PUSH RECORDS PAGE
-    final result = await recordDataBaseProvider.getRecordList(
-        PreferencesManager.instance.getStringValue(PreferencesKeys.USER_NAME));
-    result.forEach((element) {
-      print(element.toJson());
-    });
   }
 
   Future<void> saveLicensePlate() async {
@@ -165,6 +158,11 @@ abstract class _HomeViewModelBase with Store {
     } catch (e) {
       print(e);
     }
+  }
+
+  navigateToRecordsPage() {
+    NavigationService.instance
+        .navigateToPage(path: NavigationConstants.RECORDS_VIEW);
   }
 
   logout() {
