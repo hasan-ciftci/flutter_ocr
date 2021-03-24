@@ -33,42 +33,45 @@ class _RecordsViewState extends State<RecordsView> {
             appBarTextColor: ColorConstants.ISPARK_YELLOW_DARK,
             appBarColor: ColorConstants.ISPARK_BLACK),
         backgroundColor: Colors.transparent,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: FutureBuilder(
-                  future: recordsViewModel.getPlates(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<RecordModel>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return ListView.builder(
-                        itemCount: snapshot.data?.length ?? 0,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RecordCard(
-                              plate: snapshot.data[index].plate ?? "Bulunamadı",
-                              date: snapshot.data[index].timestamp ??
-                                  "Bulunamadı",
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
+        body: FutureBuilder(
+          future: recordsViewModel.getPlates(),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<RecordModel>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return buildRecordList(snapshot);
+            } else {
+              return buildCircularProgressIndicator();
+            }
+          },
         ),
       ),
+    );
+  }
+
+  ListView buildRecordList(AsyncSnapshot<List<RecordModel>> snapshot) {
+    return ListView.builder(
+      padding: EdgeInsets.all(8.0),
+      itemCount: snapshot.data?.length ?? 0,
+      itemBuilder: (BuildContext context, int index) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: buildRecordCard(snapshot, index),
+        );
+      },
+    );
+  }
+
+  RecordCard buildRecordCard(
+      AsyncSnapshot<List<RecordModel>> snapshot, int index) {
+    return RecordCard(
+      plate: snapshot.data[index].plate ?? "Bulunamadı",
+      date: snapshot.data[index].timestamp ?? "Bulunamadı",
+    );
+  }
+
+  Center buildCircularProgressIndicator() {
+    return Center(
+      child: CircularProgressIndicator(),
     );
   }
 }
