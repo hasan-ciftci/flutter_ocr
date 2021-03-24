@@ -33,19 +33,16 @@ class _RecordsViewState extends State<RecordsView> {
             appBarTextColor: ColorConstants.ISPARK_YELLOW_DARK,
             appBarColor: ColorConstants.ISPARK_BLACK),
         backgroundColor: Colors.transparent,
-        body: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: FutureBuilder(
-            future: recordsViewModel.getPlates(),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<RecordModel>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return buildRecordList(snapshot);
-              } else {
-                return buildCircularProgressIndicator();
-              }
-            },
-          ),
+        body: FutureBuilder(
+          future: recordsViewModel.getPlates(),
+          builder: (BuildContext context,
+              AsyncSnapshot<List<RecordModel>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return buildRecordList(snapshot);
+            } else {
+              return buildCircularProgressIndicator();
+            }
+          },
         ),
       ),
     );
