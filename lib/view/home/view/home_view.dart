@@ -104,13 +104,23 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  CustomElevatedButton buildSavePlateButton() {
-    return CustomElevatedButton(
-      icon: Icons.save,
-      buttonColor: ColorConstants.ISPARK_BLUE_DARK,
-      buttonText: "Kaydet",
-      onPressed: () async {
-        viewModel.saveLicensePlate();
+  Observer buildSavePlateButton() {
+    return Observer(
+      builder: (BuildContext context) {
+        bool isAvailable =
+            viewModel.scannedText != null && !viewModel.isLoading;
+        return CustomElevatedButton(
+          icon: Icons.save,
+          buttonColor: !isAvailable
+              ? ColorConstants.ISPARK_BLACK_LIGHT
+              : ColorConstants.ISPARK_BLUE_DARK,
+          buttonText: "Kaydet",
+          buttonTextColor: !isAvailable
+              ? ColorConstants.ISPARK_BLACK.withOpacity(.5)
+              : ColorConstants.ISPARK_WHITE,
+          onPressed:
+              !isAvailable ? null : () async => viewModel.saveLicensePlate(),
+        );
       },
     );
   }
