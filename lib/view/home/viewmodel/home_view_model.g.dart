@@ -106,11 +106,11 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   }
 
   @override
-  void _prepareToNewFile() {
+  void prepareToNewFile() {
     final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
         name: '_HomeViewModelBase._prepareToNewFile');
     try {
-      return super._prepareToNewFile();
+      return super.prepareToNewFile();
     } finally {
       _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
     }

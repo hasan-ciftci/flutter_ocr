@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/rectangle_text_form_field.dart';
-import 'package:flutter_ocr/core/constants/app_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/login/viewmodel/login_view_model.dart';
@@ -32,10 +31,7 @@ class _LoginViewState extends State<LoginView> {
           extendBodyBehindAppBar: false,
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.transparent,
-          appBar: buildAppBar(
-              appBarText: ApplicationConstants.COMPANY_NAME,
-              appBarTextColor: ColorConstants.ISPARK_YELLOW,
-              appBarColor: ColorConstants.ISPARK_BLACK),
+          appBar: buildAppBar(),
           body: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               double height = constraints.maxHeight;

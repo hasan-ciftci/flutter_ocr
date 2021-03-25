@@ -5,7 +5,6 @@ import 'package:flutter_ocr/core/components/bold_header_text.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/custom_drawer.dart';
 import 'package:flutter_ocr/core/components/custom_elevated_button.dart';
-import 'package:flutter_ocr/core/constants/app_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/view/home/viewmodel/home_view_model.dart';
 
@@ -31,26 +30,48 @@ class _HomeViewState extends State<HomeView> {
     return Container(
       decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
       child: Scaffold(
-        appBar: buildAppBar(
-            appBarText: ApplicationConstants.COMPANY_NAME,
-            appBarTextColor: ColorConstants.ISPARK_YELLOW,
-            appBarColor: ColorConstants.ISPARK_BLACK),
+        appBar: buildAppBar(),
         drawer: buildDrawer(context),
         key: viewModel.scaffoldState,
-        backgroundColor: Colors.transparent,
         body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(flex: 4, child: buildCameraPreview()),
-                buildPickImageButton(),
-                Expanded(flex: 4, child: buildScannedImageText()),
-                Expanded(flex: 2, child: buildSavePlateButton()),
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                  flex: 4,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      buildCameraPreview(),
+                      Observer(
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: viewModel.scannedText != null &&
+                                      !viewModel.isLoading
+                                  ? FloatingActionButton(
+                                      backgroundColor: Colors.red,
+                                      onPressed: () {
+                                        viewModel.prepareToNewFile();
+                                      },
+                                      child: Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : SizedBox(),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  )),
+              Expanded(flex: 4, child: buildScannedImageText()),
+              Expanded(flex: 2, child: buildSavePlateButton()),
+            ],
           ),
         ),
       ),
@@ -107,17 +128,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  CustomElevatedButton buildPickImageButton() {
-    return CustomElevatedButton(
-      icon: Icons.photo_camera,
-      buttonColor: ColorConstants.ISPARK_BLUE_LIGHT,
-      buttonText: "Plaka Fotoğrafı çek",
-      onPressed: () async {
-        viewModel.getImageFile();
-      },
-    );
-  }
-
   Observer buildSavePlateButton() {
     return Observer(
       builder: (BuildContext context) {
@@ -125,15 +135,13 @@ class _HomeViewState extends State<HomeView> {
             viewModel.scannedText != null && !viewModel.isLoading;
         return CustomElevatedButton(
           icon: Icons.save,
-          buttonColor: !isAvailable
-              ? ColorConstants.ISPARK_BLACK_LIGHT
-              : ColorConstants.ISPARK_BLUE_DARK,
-          buttonText: "Kaydet",
-          buttonTextColor: !isAvailable
-              ? ColorConstants.ISPARK_BLACK.withOpacity(.5)
-              : ColorConstants.ISPARK_WHITE,
-          onPressed:
-              !isAvailable ? null : () async => viewModel.saveLicensePlate(),
+          buttonColor:
+              !isAvailable ? ColorConstants.ISPARK_YELLOW : Colors.green,
+          buttonText: !isAvailable ? "Fotoğraf Çek" : "Kaydet",
+          buttonTextColor: ColorConstants.ISPARK_WHITE,
+          onPressed: !isAvailable
+              ? viewModel.getImageFile
+              : () async => viewModel.saveLicensePlate(),
         );
       },
     );

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/record_card.dart';
-import 'package:flutter_ocr/core/constants/app_constants.dart';
-import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 
@@ -28,10 +26,7 @@ class _RecordsViewState extends State<RecordsView> {
     return Container(
       decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
       child: Scaffold(
-        appBar: buildAppBar(
-            appBarText: ApplicationConstants.COMPANY_NAME,
-            appBarTextColor: ColorConstants.ISPARK_YELLOW_DARK,
-            appBarColor: ColorConstants.ISPARK_BLACK),
+        appBar: buildAppBar(),
         backgroundColor: Colors.transparent,
         body: FutureBuilder(
           future: recordsViewModel.getPlates(),

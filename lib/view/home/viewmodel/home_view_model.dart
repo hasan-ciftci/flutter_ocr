@@ -84,7 +84,7 @@ abstract class _HomeViewModelBase with Store {
     );
     _changeLoadingStatus();
 
-    _prepareToNewFile();
+    prepareToNewFile();
 
     ScaffoldMessenger.of(scaffoldState.currentContext).showSnackBar(
       SnackBar(
@@ -98,7 +98,7 @@ abstract class _HomeViewModelBase with Store {
 
   @action
   Future<void> getImageFile() async {
-    _prepareToNewFile();
+    prepareToNewFile();
     XFile previewImage;
     try {
       await initializeControllerFuture;
@@ -133,7 +133,7 @@ abstract class _HomeViewModelBase with Store {
   }
 
   @action
-  void _prepareToNewFile() {
+  void prepareToNewFile() {
     scannedText = null;
     locationModel = null;
   }

@@ -8,6 +8,7 @@ class FlutterOcr extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: LoginView(),
       navigatorKey: NavigationService.instance.navigatorKey,
       onGenerateRoute: NavigationRoutes.instance.generateRoute,

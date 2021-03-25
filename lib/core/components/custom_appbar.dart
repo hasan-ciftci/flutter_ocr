@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_ocr/core/constants/color_constants.dart';
 
-AppBar buildAppBar(
-    {@required String appBarText,
-    @required Color appBarTextColor,
-    @required Color appBarColor}) {
+AppBar buildAppBar() {
   return AppBar(
-    backgroundColor: appBarColor,
+    backgroundColor: ColorConstants.ISPARK_YELLOW,
     centerTitle: true,
-    title: Text(
-      appBarText,
-      style: TextStyle(color: appBarTextColor),
+    title: Image.asset(
+      'assets/images/logo.png',
+      fit: BoxFit.contain,
+      height: 50,
     ),
   );
 }

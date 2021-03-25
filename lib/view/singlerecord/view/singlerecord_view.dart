@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
-import 'package:flutter_ocr/core/constants/app_constants.dart';
-import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_ocr/view/singlerecord/viewmodel/singlerecord_view_model.dart';
@@ -32,10 +30,7 @@ class _SingleRecordViewState extends State<SingleRecordView> {
       decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: buildAppBar(
-              appBarText: ApplicationConstants.COMPANY_NAME,
-              appBarTextColor: ColorConstants.ISPARK_YELLOW_DARK,
-              appBarColor: ColorConstants.ISPARK_BLACK),
+          appBar: buildAppBar(),
           body: Observer(
             builder: (BuildContext context) {
               int currentRecordId = singleRecordViewModel.recordId;
