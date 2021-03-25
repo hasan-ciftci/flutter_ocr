@@ -139,16 +139,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Observer buildSelectedPhoto() {
-    return Observer(
-      builder: (BuildContext context) {
-        return viewModel.image != null
-            ? Image.file(viewModel.image)
-            : Center(child: Text("Fotoğraf eklemediniz"));
-      },
-    );
-  }
-
   EditableText buildEditableLicensePlateTextField() {
     return EditableText(
       forceLine: false,

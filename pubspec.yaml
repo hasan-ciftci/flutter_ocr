@@ -25,6 +25,8 @@ dependencies:
   path_provider: ^2.0.1
   camera:
   path:
+  google_maps_flutter:
+
 
 dev_dependencies:
   flutter_test:

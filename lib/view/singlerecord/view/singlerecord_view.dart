@@ -6,6 +6,7 @@ import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_ocr/view/singlerecord/viewmodel/singlerecord_view_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SingleRecordView extends StatefulWidget {
   @override
@@ -37,8 +38,9 @@ class _SingleRecordViewState extends State<SingleRecordView> {
               appBarColor: ColorConstants.ISPARK_BLACK),
           body: Observer(
             builder: (BuildContext context) {
+              int currentRecordId = singleRecordViewModel.recordId;
               return FutureBuilder(
-                future: singleRecordViewModel.getRecordInfo(),
+                future: singleRecordViewModel.getRecordInfo(currentRecordId),
                 builder: (BuildContext context,
                     AsyncSnapshot<RecordModel> snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -66,7 +68,16 @@ class _SingleRecordViewState extends State<SingleRecordView> {
                                     snapshot.data.longitude.toString()),
                               ),
                               Expanded(
-                                child: Text("asdasd"),
+                                child: GoogleMap(
+                                  mapType: MapType.normal,
+                                  initialCameraPosition:
+                                      singleRecordViewModel.kGooglePlex,
+                                  onMapCreated:
+                                      (GoogleMapController controller) {
+                                    singleRecordViewModel.controller
+                                        .complete(controller);
+                                  },
+                                ),
                               ),
                             ],
                           ),
