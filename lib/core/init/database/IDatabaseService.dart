@@ -6,6 +6,7 @@ abstract class DatabaseProvider<T extends RecordModel> {
   Future<List<T>> getRecordList(String username);
   Future<bool> updateRecord(int id, T model);
   Future<bool> insertRecord(T model);
+  Future<T> getItem(int id);
 
   Database database;
 

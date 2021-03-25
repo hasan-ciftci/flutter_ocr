@@ -6,33 +6,38 @@ class RecordCard extends StatelessWidget {
   final String plate;
   final String date;
   final int id;
+  final Function onPressed;
 
-  const RecordCard({
-    Key key,
-    @required this.plate,
-    @required this.date,
-    @required this.id,
-  }) : super(key: key);
+  const RecordCard(
+      {Key key,
+      @required this.plate,
+      @required this.date,
+      @required this.id,
+      @required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      decoration: StyleConstants.kRecordCardDecoration,
-      child: Row(
-        children: [
-          Expanded(
-            child: buildId(),
-          ),
-          Expanded(
-            flex: 3,
-            child: buildPlateText(),
-          ),
-          Expanded(
-            flex: 3,
-            child: buildDateColumn(),
-          ),
-        ],
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        height: 80,
+        decoration: StyleConstants.kRecordCardDecoration,
+        child: Row(
+          children: [
+            Expanded(
+              child: buildId(),
+            ),
+            Expanded(
+              flex: 3,
+              child: buildPlateText(),
+            ),
+            Expanded(
+              flex: 3,
+              child: buildDateColumn(),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -13,7 +13,7 @@ class ImagePickerService {
   ImagePickerService._init();
 
   Future<File> getImageFile() async {
-    final _file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final _file = await ImagePicker.pickImage(source: ImageSource.camera);
     if (_file != null) {
       return _file;
     }

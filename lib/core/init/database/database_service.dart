@@ -95,4 +95,76 @@ class DatabaseService extends DatabaseProvider<RecordModel> {
         ''',
     );
   }
+
+  @override
+  Future<RecordModel> getItem(int id) async {
+    if (database != null) open();
+
+    final userMaps = await database.query(
+      _tableName,
+      where: '$columnId = ?',
+      columns: [
+        columnId,
+        columnUsername,
+        columnPlate,
+        columnDate,
+        columnLatitude,
+        columnLongitude,
+        columnAltitude,
+        columnHeading,
+        columnSpeed,
+        columnSpeedAccuracy,
+        columnTimestamp,
+        columnFloor,
+        columnIsMocked,
+        columntimestamp
+      ],
+      whereArgs: [id],
+    );
+
+    if (userMaps.isNotEmpty)
+      return RecordModel.fromJson(userMaps.first);
+    else
+      return null;
+  }
+
+  Future<Map<String, dynamic>> getNextItem(int id) async {
+    if (database != null) open();
+
+    final userMaps = await database.query(
+      _tableName,
+      where: '$columnId > ?',
+      columns: [
+        columnId,
+      ],
+      orderBy: "id ASC",
+      limit: 1,
+      whereArgs: [id],
+    );
+
+    if (userMaps.isNotEmpty)
+      return userMaps.first;
+    else
+      return null;
+  }
+
+  Future<Map<String, dynamic>> getPreviousItem(int id) async {
+    if (database != null) open();
+
+    final userMaps = await database.query(
+      _tableName,
+      where: '$columnId < ?',
+      columns: [
+        columnId,
+      ],
+      orderBy: "id DESC",
+      limit: 1,
+      whereArgs: [id],
+    );
+
+    if (userMaps.isNotEmpty)
+      return userMaps.first;
+    else
+      return null;
+  }
 }

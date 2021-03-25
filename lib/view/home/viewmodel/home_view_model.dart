@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/constants/preferences_keys.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
-import 'package:flutter_ocr/core/init/image%20picker/image_picker.dart';
+import 'package:flutter_ocr/core/init/imagepicker/image_picker.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';

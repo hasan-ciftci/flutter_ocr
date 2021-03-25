@@ -63,10 +63,14 @@ class _RecordsViewState extends State<RecordsView> {
 
   RecordCard buildRecordCard(
       AsyncSnapshot<List<RecordModel>> snapshot, int index) {
+    var data = snapshot.data[index];
     return RecordCard(
-      plate: snapshot.data[index].plate ?? "Bulunamadı",
-      date: snapshot.data[index].timestamp ?? "Bulunamadı",
-      id: snapshot.data[index].id ?? "yok",
+      onPressed: () {
+        recordsViewModel.navigateToSingleRecordViewPage(data.id);
+      },
+      plate: data.plate ?? "Bulunamadı",
+      date: data.timestamp ?? "Bulunamadı",
+      id: data.id ?? "yok",
     );
   }
 
