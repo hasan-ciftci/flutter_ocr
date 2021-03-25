@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -22,6 +23,7 @@ class HomeViewModel = _HomeViewModelBase with _$HomeViewModel;
 abstract class _HomeViewModelBase with Store {
   String _producedText;
   File _selectedImage;
+  String _selectedImageBase64;
   TextEditingController editingController;
   FocusNode focusNode;
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
@@ -78,6 +80,7 @@ abstract class _HomeViewModelBase with Store {
         isMocked: locationModel?.isMocked,
         floor: locationModel?.floor,
         timestamp: DateTime.now().toString(),
+        base64Image: _selectedImageBase64,
         username: PreferencesManager.instance
             .getStringValue(PreferencesKeys.USER_NAME),
       ),
@@ -108,8 +111,15 @@ abstract class _HomeViewModelBase with Store {
     }
     _selectedImage = File(previewImage.path);
     if (_selectedImage != null) {
+      await convertImageToBase64(_selectedImage);
       scanImage();
     }
+  }
+
+  convertImageToBase64(File imageReadyToBeConverted) async {
+    final bytes = await File(imageReadyToBeConverted.path).readAsBytes();
+    print(base64.encode(bytes));
+    _selectedImageBase64 = base64.encode(bytes);
   }
 
   @observable

@@ -11,6 +11,7 @@ class RecordModel {
   String username;
   String plate;
   String timestamp;
+  String base64Image;
 
   RecordModel(
       {this.latitude,
@@ -24,7 +25,8 @@ class RecordModel {
       this.username,
       this.plate,
       this.timestamp,
-      this.id});
+      this.id,
+      this.base64Image});
 
   RecordModel.fromJson(Map<String, dynamic> json) {
     latitude = json['latitude'];
@@ -39,6 +41,7 @@ class RecordModel {
     plate = json['plate'];
     timestamp = json['timeStamp'];
     id = json["id"];
+    base64Image = json["base64Image"];
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +57,7 @@ class RecordModel {
     data['username'] = this.username;
     data['plate'] = this.plate;
     data['timeStamp'] = this.timestamp;
+    data['base64Image'] = this.base64Image;
     return data;
   }
 }

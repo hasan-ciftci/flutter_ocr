@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
@@ -79,82 +81,88 @@ class _SingleRecordViewState extends State<SingleRecordView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildPlateText(snapshot),
-          buildCoordinationText(snapshot),
-          buildMap(snapshot),
+          Expanded(flex: 6, child: buildPlateText(snapshot)),
+          Expanded(child: buildCoordinationText(snapshot)),
+          Expanded(flex: 3, child: buildMap(snapshot)),
         ],
       ),
     );
   }
 
-  Expanded buildMap(AsyncSnapshot<RecordModel> snapshot) {
-    return Expanded(
-      child: GoogleMap(
-        markers: Set<Marker>.of([
-          Marker(
-              markerId: MarkerId('currentPosition'),
-              position: LatLng(snapshot.data.latitude, snapshot.data.longitude),
-              infoWindow: InfoWindow(title: 'The title of the marker'))
-        ]),
-        mapType: MapType.normal,
-        initialCameraPosition: singleRecordViewModel.getCameraPosition(
-            snapshot.data.latitude, snapshot.data.longitude),
-        onMapCreated: (GoogleMapController controller) {
-          singleRecordViewModel.controller.complete(controller);
-        },
-      ),
+  GoogleMap buildMap(AsyncSnapshot<RecordModel> snapshot) {
+    return GoogleMap(
+      markers: Set<Marker>.of([
+        Marker(
+            markerId: MarkerId('currentPosition'),
+            position: LatLng(snapshot.data.latitude, snapshot.data.longitude),
+            infoWindow: InfoWindow(title: 'The title of the marker'))
+      ]),
+      mapType: MapType.normal,
+      initialCameraPosition: singleRecordViewModel.getCameraPosition(
+          snapshot.data.latitude, snapshot.data.longitude),
+      onMapCreated: (GoogleMapController controller) {
+        singleRecordViewModel.controller.complete(controller);
+      },
     );
   }
 
-  Expanded buildCoordinationText(AsyncSnapshot<RecordModel> snapshot) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text(
-            "Konum Bilgisi",
-            textScaleFactor: 1.4,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          SelectableText(snapshot.data.latitude.toString() +
-              ", " +
-              snapshot.data.longitude.toString()),
-        ],
-      ),
-    );
-  }
-
-  Expanded buildPlateText(AsyncSnapshot<RecordModel> snapshot) {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: ColorConstants.ISPARK_YELLOW,
+  Column buildCoordinationText(AsyncSnapshot<RecordModel> snapshot) {
+    return Column(
+      children: [
+        Text(
+          "Konum Bilgisi",
+          textScaleFactor: 1.4,
         ),
-        child: FractionallySizedBox(
-          widthFactor: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Araç Plakası",
-                textScaleFactor: 1.8,
+        SizedBox(
+          height: 10,
+        ),
+        SelectableText(snapshot.data.latitude.toString() +
+            ", " +
+            snapshot.data.longitude.toString()),
+      ],
+    );
+  }
+
+  Container buildPlateText(AsyncSnapshot<RecordModel> snapshot) {
+    return Container(
+      margin: EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: ColorConstants.ISPARK_YELLOW,
+      ),
+      child: FractionallySizedBox(
+        widthFactor: 1,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              "Araç Plakası",
+              textScaleFactor: 1.8,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            SelectableText(
+              snapshot.data.plate,
+              textScaleFactor: 1.2,
+              style: TextStyle(
+                  color: ColorConstants.ISPARK_BLUE_DARK,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0),
+            ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.memory(
+                  base64Decode(snapshot.data.base64Image),
+                ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              SelectableText(
-                snapshot.data.plate,
-                textScaleFactor: 1.2,
-                style: TextStyle(
-                    color: ColorConstants.ISPARK_BLUE_DARK,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

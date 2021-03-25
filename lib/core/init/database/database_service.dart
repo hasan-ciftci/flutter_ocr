@@ -31,6 +31,7 @@ class DatabaseService extends DatabaseProvider<RecordModel> {
   String columnFloor = "floor";
   String columnIsMocked = "isMocked";
   String columntimestamp = "timestamp";
+  String columnBase64Image = "base64Image";
 
   @override
   Future<List<RecordModel>> getRecordList(String username) async {
@@ -91,7 +92,8 @@ class DatabaseService extends DatabaseProvider<RecordModel> {
         $columnSpeedAccuracy DOUBLE,
         $columnFloor INTEGER, 
         $columnIsMocked INTEGER,
-        $columnTimestamp VARCHAR(100) )
+        $columnTimestamp VARCHAR(100),
+        $columnBase64Image VARCHAR(255) )
         ''',
     );
   }
@@ -117,7 +119,8 @@ class DatabaseService extends DatabaseProvider<RecordModel> {
         columnTimestamp,
         columnFloor,
         columnIsMocked,
-        columntimestamp
+        columntimestamp,
+        columnBase64Image
       ],
       whereArgs: [id],
     );
