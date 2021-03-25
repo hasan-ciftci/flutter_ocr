@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/constants/preferences_keys.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
-import 'package:flutter_ocr/core/init/imagepicker/image_picker.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
@@ -28,11 +28,21 @@ abstract class _HomeViewModelBase with Store {
 
   DatabaseService recordDataBaseProvider;
 
+  CameraController controller;
+  Future<void> initializeControllerFuture;
+
   init() {
     editingController = TextEditingController();
     focusNode = FocusNode();
     recordDataBaseProvider = DatabaseService.instance;
     recordDataBaseProvider.open();
+    controller = CameraController(
+        CameraDescription(
+            name: "0",
+            lensDirection: CameraLensDirection.back,
+            sensorOrientation: 90),
+        ResolutionPreset.medium);
+    initializeControllerFuture = controller.initialize();
   }
 
   @action
@@ -89,8 +99,14 @@ abstract class _HomeViewModelBase with Store {
   @action
   Future<void> getImageFile() async {
     _prepareToNewFile();
-    _selectedImage = await ImagePickerService.instance.getImageFile();
-    _updateSelectedImage(_selectedImage);
+    XFile previewImage;
+    try {
+      await initializeControllerFuture;
+      previewImage = await controller.takePicture();
+    } catch (e) {
+      print(e);
+    }
+    _selectedImage = File(previewImage.path);
     if (_selectedImage != null) {
       scanImage();
     }
@@ -101,9 +117,6 @@ abstract class _HomeViewModelBase with Store {
 
   @observable
   String scannedText;
-
-  @observable
-  File image;
 
   @observable
   LocationModel locationModel;
@@ -120,13 +133,7 @@ abstract class _HomeViewModelBase with Store {
   }
 
   @action
-  void _updateSelectedImage(File selectedImage) {
-    image = selectedImage;
-  }
-
-  @action
   void _prepareToNewFile() {
-    image = null;
     scannedText = null;
     locationModel = null;
   }

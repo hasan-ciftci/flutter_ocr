@@ -39,21 +39,6 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     });
   }
 
-  final _$imageAtom = Atom(name: '_HomeViewModelBase.image');
-
-  @override
-  File get image {
-    _$imageAtom.reportRead();
-    return super.image;
-  }
-
-  @override
-  set image(File value) {
-    _$imageAtom.reportWrite(value, super.image, () {
-      super.image = value;
-    });
-  }
-
   final _$locationModelAtom = Atom(name: '_HomeViewModelBase.locationModel');
 
   @override
@@ -121,17 +106,6 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   }
 
   @override
-  void _updateSelectedImage(File selectedImage) {
-    final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
-        name: '_HomeViewModelBase._updateSelectedImage');
-    try {
-      return super._updateSelectedImage(selectedImage);
-    } finally {
-      _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void _prepareToNewFile() {
     final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
         name: '_HomeViewModelBase._prepareToNewFile');
@@ -147,7 +121,6 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     return '''
 isLoading: ${isLoading},
 scannedText: ${scannedText},
-image: ${image},
 locationModel: ${locationModel}
     ''';
   }

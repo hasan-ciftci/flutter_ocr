@@ -24,6 +24,30 @@ mixin _$SingleRecordViewModel on _SingleRecordViewModelBase, Store {
     });
   }
 
+  final _$getRecordInfoAsyncAction =
+      AsyncAction('_SingleRecordViewModelBase.getRecordInfo');
+
+  @override
+  Future<RecordModel> getRecordInfo() {
+    return _$getRecordInfoAsyncAction.run(() => super.getRecordInfo());
+  }
+
+  final _$getNextAsyncAction =
+      AsyncAction('_SingleRecordViewModelBase.getNext');
+
+  @override
+  Future getNext() {
+    return _$getNextAsyncAction.run(() => super.getNext());
+  }
+
+  final _$getPreviousAsyncAction =
+      AsyncAction('_SingleRecordViewModelBase.getPrevious');
+
+  @override
+  Future getPrevious() {
+    return _$getPreviousAsyncAction.run(() => super.getPrevious());
+  }
+
   final _$_SingleRecordViewModelBaseActionController =
       ActionController(name: '_SingleRecordViewModelBase');
 
@@ -33,28 +57,6 @@ mixin _$SingleRecordViewModel on _SingleRecordViewModelBase, Store {
         .startAction(name: '_SingleRecordViewModelBase.setRecordId');
     try {
       return super.setRecordId(currentId);
-    } finally {
-      _$_SingleRecordViewModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getNext() {
-    final _$actionInfo = _$_SingleRecordViewModelBaseActionController
-        .startAction(name: '_SingleRecordViewModelBase.getNext');
-    try {
-      return super.getNext();
-    } finally {
-      _$_SingleRecordViewModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getPrevious() {
-    final _$actionInfo = _$_SingleRecordViewModelBaseActionController
-        .startAction(name: '_SingleRecordViewModelBase.getPrevious');
-    try {
-      return super.getPrevious();
     } finally {
       _$_SingleRecordViewModelBaseActionController.endAction(_$actionInfo);
     }

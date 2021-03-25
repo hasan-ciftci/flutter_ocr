@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/bold_header_text.dart';
@@ -44,7 +45,7 @@ class _HomeViewState extends State<HomeView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(flex: 4, child: buildSelectedPhoto()),
+                Expanded(flex: 4, child: buildCameraPreview()),
                 buildPickImageButton(),
                 Expanded(flex: 4, child: buildScannedImageText()),
                 Expanded(flex: 2, child: buildSavePlateButton()),
@@ -53,6 +54,19 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
+    );
+  }
+
+  FutureBuilder<void> buildCameraPreview() {
+    return FutureBuilder<void>(
+      future: viewModel.initializeControllerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return CameraPreview(viewModel.controller);
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 
