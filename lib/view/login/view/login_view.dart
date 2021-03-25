@@ -43,19 +43,17 @@ class _LoginViewState extends State<LoginView> {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: horizontalPadding, vertical: horizontalPadding),
-                child: Flexible(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      buildTopic(),
-                      buildLoginForm(),
-                      Observer(
-                        builder: (BuildContext context) {
-                          return buildLoginButton();
-                        },
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    buildTopic(),
+                    buildLoginForm(),
+                    Observer(
+                      builder: (BuildContext context) {
+                        return buildLoginButton();
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
