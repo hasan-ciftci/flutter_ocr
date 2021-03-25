@@ -137,7 +137,7 @@ class _HomeViewState extends State<HomeView> {
           icon: Icons.save,
           buttonColor:
               !isAvailable ? ColorConstants.ISPARK_YELLOW : Colors.green,
-          buttonText: !isAvailable ? "Fotoğraf Çek" : "Kaydet",
+          buttonText: Text(!isAvailable ? "Fotoğraf Çek" : "Kaydet"),
           buttonTextColor: ColorConstants.ISPARK_WHITE,
           onPressed: !isAvailable
               ? viewModel.getImageFile

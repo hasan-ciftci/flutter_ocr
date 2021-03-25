@@ -24,36 +24,6 @@ mixin _$SingleRecordViewModel on _SingleRecordViewModelBase, Store {
     });
   }
 
-  final _$latitudeAtom = Atom(name: '_SingleRecordViewModelBase.latitude');
-
-  @override
-  double get latitude {
-    _$latitudeAtom.reportRead();
-    return super.latitude;
-  }
-
-  @override
-  set latitude(double value) {
-    _$latitudeAtom.reportWrite(value, super.latitude, () {
-      super.latitude = value;
-    });
-  }
-
-  final _$longitudeAtom = Atom(name: '_SingleRecordViewModelBase.longitude');
-
-  @override
-  double get longitude {
-    _$longitudeAtom.reportRead();
-    return super.longitude;
-  }
-
-  @override
-  set longitude(double value) {
-    _$longitudeAtom.reportWrite(value, super.longitude, () {
-      super.longitude = value;
-    });
-  }
-
   final _$getRecordInfoAsyncAction =
       AsyncAction('_SingleRecordViewModelBase.getRecordInfo');
 
@@ -95,9 +65,7 @@ mixin _$SingleRecordViewModel on _SingleRecordViewModelBase, Store {
   @override
   String toString() {
     return '''
-recordId: ${recordId},
-latitude: ${latitude},
-longitude: ${longitude}
+recordId: ${recordId}
     ''';
   }
 }

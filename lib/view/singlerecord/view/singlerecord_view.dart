@@ -64,9 +64,16 @@ class _SingleRecordViewState extends State<SingleRecordView> {
                               ),
                               Expanded(
                                 child: GoogleMap(
+                                  markers: Set<Marker>.of([
+                                    Marker(
+                                        markerId: MarkerId('SomeId'),
+                                        position: LatLng(37.718590, 35.327610),
+                                        infoWindow: InfoWindow(
+                                            title: 'The title of the marker'))
+                                  ]),
                                   mapType: MapType.normal,
-                                  initialCameraPosition:
-                                      singleRecordViewModel.kGooglePlex,
+                                  initialCameraPosition: singleRecordViewModel
+                                      .getCameraPosition(37.718590, 35.327610),
                                   onMapCreated:
                                       (GoogleMapController controller) {
                                     singleRecordViewModel.controller

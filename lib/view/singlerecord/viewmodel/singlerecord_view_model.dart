@@ -13,18 +13,17 @@ class SingleRecordViewModel = _SingleRecordViewModelBase
 abstract class _SingleRecordViewModelBase with Store {
   Completer<GoogleMapController> controller = Completer();
 
-  final CameraPosition kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    bearing: 20,
-  );
+  CameraPosition markedPosition;
+
+  getCameraPosition(double latitude, double longitude) {
+    return markedPosition = CameraPosition(
+      target: LatLng(latitude, longitude),
+      zoom: 14.4746,
+    );
+  }
 
   @observable
   int recordId;
-
-  @observable
-  double latitude;
-  @observable
-  double longitude;
 
   @action
   setRecordId(int currentId) {
@@ -47,5 +46,7 @@ abstract class _SingleRecordViewModelBase with Store {
   getPrevious() async {
     var myMap = await DatabaseService.instance.getPreviousItem(recordId);
     recordId = myMap["id"];
+    recordId = myMap["latitude"];
+    recordId = myMap["longitude"];
   }
 }

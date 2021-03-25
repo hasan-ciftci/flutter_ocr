@@ -108,7 +108,7 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   @override
   void prepareToNewFile() {
     final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
-        name: '_HomeViewModelBase._prepareToNewFile');
+        name: '_HomeViewModelBase.prepareToNewFile');
     try {
       return super.prepareToNewFile();
     } finally {
