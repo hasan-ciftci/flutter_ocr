@@ -46,7 +46,5 @@ abstract class _SingleRecordViewModelBase with Store {
   getPrevious() async {
     var myMap = await DatabaseService.instance.getPreviousItem(recordId);
     recordId = myMap["id"];
-    recordId = myMap["latitude"];
-    recordId = myMap["longitude"];
   }
 }
