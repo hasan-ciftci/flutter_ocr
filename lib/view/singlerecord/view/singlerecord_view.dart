@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
+import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_ocr/view/singlerecord/viewmodel/singlerecord_view_model.dart';
@@ -41,66 +42,132 @@ class _SingleRecordViewState extends State<SingleRecordView> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return Row(
                       children: [
-                        Expanded(
-                          child: IconButton(
-                            onPressed: () {
-                              singleRecordViewModel.getPrevious();
-                            },
-                            icon: Icon(Icons.arrow_back_ios),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 8,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Text(snapshot.data.plate),
-                              ),
-                              Expanded(
-                                child: Text(snapshot.data.latitude.toString() +
-                                    ", " +
-                                    snapshot.data.longitude.toString()),
-                              ),
-                              Expanded(
-                                child: GoogleMap(
-                                  markers: Set<Marker>.of([
-                                    Marker(
-                                        markerId: MarkerId('SomeId'),
-                                        position: LatLng(37.718590, 35.327610),
-                                        infoWindow: InfoWindow(
-                                            title: 'The title of the marker'))
-                                  ]),
-                                  mapType: MapType.normal,
-                                  initialCameraPosition: singleRecordViewModel
-                                      .getCameraPosition(37.718590, 35.327610),
-                                  onMapCreated:
-                                      (GoogleMapController controller) {
-                                    singleRecordViewModel.controller
-                                        .complete(controller);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: IconButton(
-                            onPressed: () {
-                              singleRecordViewModel.getNext();
-                            },
-                            icon: Icon(Icons.arrow_forward_ios),
-                          ),
-                        ),
+                        buildPreviousButton(),
+                        buildRecordInformation(snapshot),
+                        buildNextButton(),
                       ],
                     );
                   } else {
-                    return CircularProgressIndicator();
+                    return Center(
+                        child: CircularProgressIndicator(
+                      backgroundColor: ColorConstants.ISPARK_YELLOW,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          ColorConstants.ISPARK_YELLOW_DARK),
+                    ));
                   }
                 },
               );
             },
           )),
+    );
+  }
+
+  Expanded buildNextButton() {
+    return Expanded(
+      child: IconButton(
+        onPressed: () {
+          singleRecordViewModel.getNext();
+        },
+        icon: Icon(Icons.arrow_forward_ios),
+      ),
+    );
+  }
+
+  Expanded buildRecordInformation(AsyncSnapshot<RecordModel> snapshot) {
+    return Expanded(
+      flex: 8,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildPlateText(snapshot),
+          buildCoordinationText(snapshot),
+          buildMap(snapshot),
+        ],
+      ),
+    );
+  }
+
+  Expanded buildMap(AsyncSnapshot<RecordModel> snapshot) {
+    return Expanded(
+      child: GoogleMap(
+        markers: Set<Marker>.of([
+          Marker(
+              markerId: MarkerId('currentPosition'),
+              position: LatLng(snapshot.data.latitude, snapshot.data.longitude),
+              infoWindow: InfoWindow(title: 'The title of the marker'))
+        ]),
+        mapType: MapType.normal,
+        initialCameraPosition: singleRecordViewModel.getCameraPosition(
+            snapshot.data.latitude, snapshot.data.longitude),
+        onMapCreated: (GoogleMapController controller) {
+          singleRecordViewModel.controller.complete(controller);
+        },
+      ),
+    );
+  }
+
+  Expanded buildCoordinationText(AsyncSnapshot<RecordModel> snapshot) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            "Konum Bilgisi",
+            textScaleFactor: 1.4,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          SelectableText(snapshot.data.latitude.toString() +
+              ", " +
+              snapshot.data.longitude.toString()),
+        ],
+      ),
+    );
+  }
+
+  Expanded buildPlateText(AsyncSnapshot<RecordModel> snapshot) {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: ColorConstants.ISPARK_YELLOW,
+        ),
+        child: FractionallySizedBox(
+          widthFactor: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Araç Plakası",
+                textScaleFactor: 1.8,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SelectableText(
+                snapshot.data.plate,
+                textScaleFactor: 1.2,
+                style: TextStyle(
+                    color: ColorConstants.ISPARK_BLUE_DARK,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Expanded buildPreviousButton() {
+    return Expanded(
+      child: IconButton(
+        onPressed: () {
+          singleRecordViewModel.getPrevious();
+        },
+        icon: Icon(Icons.arrow_back_ios),
+      ),
     );
   }
 }
