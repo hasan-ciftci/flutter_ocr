@@ -24,6 +24,21 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
     });
   }
 
+  final _$isScanningAtom = Atom(name: '_HomeViewModelBase.isScanning');
+
+  @override
+  bool get isScanning {
+    _$isScanningAtom.reportRead();
+    return super.isScanning;
+  }
+
+  @override
+  set isScanning(bool value) {
+    _$isScanningAtom.reportWrite(value, super.isScanning, () {
+      super.isScanning = value;
+    });
+  }
+
   final _$scannedTextAtom = Atom(name: '_HomeViewModelBase.scannedText');
 
   @override
@@ -95,6 +110,17 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   }
 
   @override
+  void _changeScanningStatus() {
+    final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
+        name: '_HomeViewModelBase._changeScanningStatus');
+    try {
+      return super._changeScanningStatus();
+    } finally {
+      _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void _updateScannedText(String producedText) {
     final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
         name: '_HomeViewModelBase._updateScannedText');
@@ -120,6 +146,7 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
+isScanning: ${isScanning},
 scannedText: ${scannedText},
 locationModel: ${locationModel}
     ''';

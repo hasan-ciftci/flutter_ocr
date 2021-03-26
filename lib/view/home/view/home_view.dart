@@ -1,12 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_ocr/core/components/bold_header_text.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/custom_drawer.dart';
 import 'package:flutter_ocr/core/components/custom_elevated_button.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/view/home/viewmodel/home_view_model.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../../core/constants/style_constants.dart';
 
@@ -39,7 +39,7 @@ class _HomeViewState extends State<HomeView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                  flex: 4,
+                  flex: 5,
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -69,7 +69,7 @@ class _HomeViewState extends State<HomeView> {
                       )
                     ],
                   )),
-              Expanded(flex: 4, child: buildScannedImageText()),
+              Expanded(flex: 3, child: buildScannedImageText()),
               Expanded(flex: 2, child: buildSavePlateButton()),
             ],
           ),
@@ -95,37 +95,57 @@ class _HomeViewState extends State<HomeView> {
     return Observer(
       builder: (BuildContext context) {
         return viewModel.isLoading
-            ? buildProgressIndicator()
-            : buildOcrResultText();
+            ? CircularProgressIndicator()
+            : viewModel.isScanning
+                ? buildScanningAnimation()
+                : buildOcrResultText();
       },
     );
   }
 
-  Center buildProgressIndicator() => Center(child: CircularProgressIndicator());
+  Center buildScanningAnimation() => Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          processingAnimation,
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            "Plaka taranıyor",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+        ],
+      ));
 
-  Padding buildOcrResultText() {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            BoldHeaderText(text: 'PLAKA BİLGİSİ'),
-            SizedBox(height: 10),
-            viewModel.scannedText != null
-                ? buildEditableLicensePlateTextField()
-                : Text(
-                    "Plaka tespiti için kameranızı plakaya odaklayın ve fotoğraf çekin",
-                    textAlign: TextAlign.center,
-                  ),
-            SizedBox(height: 20),
-            BoldHeaderText(text: 'KONUM BİLGİSİ'),
-            SizedBox(height: 10),
-            viewModel.locationModel != null
-                ? buildCoordinationsText()
-                : Text("Konum, plaka analizinden sonra otomatik olarak eklenir"),
-          ],
+  Center buildLoadingAnimation() => Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          processingAnimation,
+          SizedBox(
+            width: 10,
+          ),
+          Text("Kaydediliyor"),
+        ],
+      ));
+
+  Center buildOcrResultText() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: viewModel.scannedText != null
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    buildEditableLicensePlateTextField(),
+                    buildCoordinationsText()
+                  ],
+                )
+              : buildPlaceholderInformativeText(),
         ),
       ),
     );
@@ -135,14 +155,14 @@ class _HomeViewState extends State<HomeView> {
     return Observer(
       builder: (BuildContext context) {
         bool isAvailable =
-            viewModel.scannedText != null && !viewModel.isLoading;
+            viewModel.scannedText != null && !viewModel.isScanning;
         return CustomElevatedButton(
             icon: Icons.save,
             buttonColor:
                 !isAvailable ? ColorConstants.ISPARK_YELLOW : Colors.green,
             buttonText: Text(!isAvailable ? "Fotoğraf Çek" : "Kaydet"),
             buttonTextColor: ColorConstants.ISPARK_WHITE,
-            onPressed: viewModel.isLoading
+            onPressed: viewModel.isScanning || viewModel.isLoading
                 ? null
                 : isAvailable
                     ? () async => viewModel.saveLicensePlate()
@@ -187,4 +207,35 @@ class _HomeViewState extends State<HomeView> {
       logOutFunction: viewModel.logout,
     );
   }
+
+  Column buildPlaceholderInformativeText() {
+    return Column(
+      children: [
+        Icon(
+          Icons.fit_screen,
+          size: 45,
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Text(
+          "Kameranızı plakaya odaklayın",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+      ],
+    );
+  }
+
+  final processingAnimation = SpinKitChasingDots(
+    size: 30,
+    itemBuilder: (BuildContext context, int index) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: index.isEven ? Colors.yellow : Colors.black,
+        ),
+      );
+    },
+  );
 }

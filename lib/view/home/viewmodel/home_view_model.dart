@@ -119,6 +119,8 @@ abstract class _HomeViewModelBase with Store {
 
   @observable
   bool isLoading = false;
+  @observable
+  bool isScanning = false;
 
   @observable
   String scannedText;
@@ -129,6 +131,11 @@ abstract class _HomeViewModelBase with Store {
   @action
   void _changeLoadingStatus() {
     isLoading = !isLoading;
+  }
+
+  @action
+  void _changeScanningStatus() {
+    isScanning = !isScanning;
   }
 
   @action
@@ -145,7 +152,7 @@ abstract class _HomeViewModelBase with Store {
 
   Future<void> scanImageOffline() async {
     if (_selectedImage != null) {
-      _changeLoadingStatus();
+      _changeScanningStatus();
       _producedText =
           await OcrService.instance.getTextFromImage(_selectedImage);
       if (_producedText.isNotEmpty) {
@@ -154,7 +161,7 @@ abstract class _HomeViewModelBase with Store {
         showSnackBar(
             status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
       }
-      _changeLoadingStatus();
+      _changeScanningStatus();
     }
   }
 
