@@ -5,8 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/core/constants/enums.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
-import 'package:flutter_ocr/core/constants/preferences_keys.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
@@ -92,14 +92,7 @@ abstract class _HomeViewModelBase with Store {
 
     prepareToNewFile();
 
-    ScaffoldMessenger.of(scaffoldState.currentContext).showSnackBar(
-      SnackBar(
-        elevation: 10,
-        duration: Duration(milliseconds: 1500),
-        backgroundColor: Colors.green,
-        content: Text("Başarılı"),
-      ),
-    );
+    showSnackBar(status: SnackBarStatus.SUCCESS, message: "Kaydedildi");
   }
 
   @action
@@ -155,7 +148,12 @@ abstract class _HomeViewModelBase with Store {
       _changeLoadingStatus();
       _producedText =
           await OcrService.instance.getTextFromImage(_selectedImage);
-      _updateScannedText(_producedText);
+      if (_producedText.isNotEmpty) {
+        _updateScannedText(_producedText);
+      } else {
+        showSnackBar(
+            status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
+      }
       _changeLoadingStatus();
     }
   }
@@ -186,5 +184,17 @@ abstract class _HomeViewModelBase with Store {
 
   logout() {
     //TODO: IMPLEMENT LOGOUT
+  }
+
+  showSnackBar({SnackBarStatus status, String message}) {
+    ScaffoldMessenger.of(scaffoldState.currentContext).showSnackBar(
+      SnackBar(
+        elevation: 10,
+        duration: Duration(milliseconds: 1500),
+        backgroundColor:
+            status == SnackBarStatus.SUCCESS ? Colors.green : Colors.red,
+        content: Text(message),
+      ),
+    );
   }
 }

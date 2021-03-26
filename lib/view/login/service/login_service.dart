@@ -1,5 +1,5 @@
+import 'package:flutter_ocr/core/constants/enums.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
-import 'package:flutter_ocr/core/constants/preferences_keys.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 import 'package:flutter_ocr/view/login/model/user_model.dart';
 
