@@ -179,7 +179,6 @@ class _HomeViewState extends State<HomeView> {
   CustomDrawer buildDrawer(BuildContext context) {
     return CustomDrawer(
       firstFunction: viewModel.navigateToRecordsPage,
-      drawerHeaderName: 'PARXLAB',
       firstOptionName: 'Kayıtlar',
       firstIconData: Icons.save,
       logOutFunction: viewModel.logout,

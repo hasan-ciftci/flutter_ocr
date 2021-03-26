@@ -11,7 +11,6 @@ class CustomDrawer extends StatelessWidget {
   final Function secondFunction;
 
   final Function logOutFunction;
-  final String drawerHeaderName;
 
   const CustomDrawer({
     Key key,
@@ -19,7 +18,6 @@ class CustomDrawer extends StatelessWidget {
     @required this.logOutFunction,
     @required this.firstIconData,
     @required this.firstOptionName,
-    @required this.drawerHeaderName,
     this.secondIconData,
     this.secondOptionName,
     this.secondFunction,
@@ -29,7 +27,7 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: ColorConstants.ISPARK_YELLOW,
+        color: ColorConstants.ISPARK_WHITE,
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -89,13 +87,17 @@ class CustomDrawer extends StatelessWidget {
   DrawerHeader buildDrawerHeader() {
     return DrawerHeader(
       child: Center(
-          child: Text(
-        drawerHeaderName,
-        textScaleFactor: 4,
-        style: TextStyle(color: ColorConstants.ISPARK_YELLOW_DARK),
+          child: RichText(
+        textScaleFactor: 2,
+        text: TextSpan(children: [
+          TextSpan(
+              text: "İspark", style: TextStyle(fontWeight: FontWeight.w300)),
+          TextSpan(
+              text: "Scanner", style: TextStyle(fontWeight: FontWeight.bold)),
+        ]),
       )),
       decoration: BoxDecoration(
-        color: ColorConstants.ISPARK_BLACK,
+        color: ColorConstants.ISPARK_YELLOW,
       ),
     );
   }
