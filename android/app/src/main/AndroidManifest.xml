@@ -13,9 +13,6 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBHMee2UZzkTZC5KNic5wKwcABkjA9mlno"/>
         <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="ocr,text" />
-        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <activity
