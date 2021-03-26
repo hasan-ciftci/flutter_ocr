@@ -11,5 +11,5 @@ class ColorConstants {
 
   static const ISPARK_BLACK = Color(0xFF1D1D1B);
 
-  static const ISPARK_WHITE = Color(0xFFFFFFFF);
+  static const ISPARK_WHITE = Color(0xFFFAFAFA);
 }

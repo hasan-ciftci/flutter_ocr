@@ -29,39 +29,44 @@ class _SingleRecordViewState extends State<SingleRecordView> {
     int currentId = arguments["passedId"];
     singleRecordViewModel.setRecordId(currentId);
 
-    return Container(
-      decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: buildAppBar(),
-          body: Observer(
-            builder: (BuildContext context) {
-              int currentRecordId = singleRecordViewModel.recordId;
-              return FutureBuilder(
-                future: singleRecordViewModel.getRecordInfo(currentRecordId),
-                builder: (BuildContext context,
-                    AsyncSnapshot<RecordModel> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Row(
-                      children: [
-                        buildPreviousButton(),
-                        buildRecordInformation(snapshot),
-                        buildNextButton(),
-                      ],
-                    );
-                  } else {
-                    return Center(
-                        child: CircularProgressIndicator(
-                      backgroundColor: ColorConstants.ISPARK_YELLOW,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          ColorConstants.ISPARK_YELLOW_DARK),
-                    ));
-                  }
-                },
-              );
-            },
-          )),
-    );
+    return Scaffold(
+        backgroundColor: ColorConstants.ISPARK_WHITE,
+        appBar: buildAppBar(),
+        body: Observer(
+          builder: (BuildContext context) {
+            int currentRecordId = singleRecordViewModel.recordId;
+            return FutureBuilder(
+              future: singleRecordViewModel.getRecordInfo(currentRecordId),
+              builder:
+                  (BuildContext context, AsyncSnapshot<RecordModel> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Column(
+                    children: [
+                      Expanded(
+                        flex: 7,
+                        child: Row(
+                          children: [
+                            buildPreviousButton(),
+                            buildRecordInformation(snapshot),
+                            buildNextButton(),
+                          ],
+                        ),
+                      ),
+                      Expanded(flex: 3, child: buildMap(snapshot)),
+                    ],
+                  );
+                } else {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    backgroundColor: ColorConstants.ISPARK_YELLOW,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        ColorConstants.ISPARK_YELLOW_DARK),
+                  ));
+                }
+              },
+            );
+          },
+        ));
   }
 
   Expanded buildNextButton() {
@@ -83,7 +88,6 @@ class _SingleRecordViewState extends State<SingleRecordView> {
         children: [
           Expanded(flex: 6, child: buildPlateText(snapshot)),
           Expanded(child: buildCoordinationText(snapshot)),
-          Expanded(flex: 3, child: buildMap(snapshot)),
         ],
       ),
     );
@@ -128,7 +132,8 @@ class _SingleRecordViewState extends State<SingleRecordView> {
       margin: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        color: ColorConstants.ISPARK_YELLOW,
+        boxShadow: StyleConstants.kBoxShadow,
+        color: Colors.white,
       ),
       child: FractionallySizedBox(
         widthFactor: 1,

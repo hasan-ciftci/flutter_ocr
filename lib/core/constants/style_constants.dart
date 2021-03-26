@@ -57,4 +57,19 @@ class StyleConstants {
       color: Colors.black38,
     ),
   ];
+
+  static final kBoxShadow = <BoxShadow>[
+    BoxShadow(
+      color: Colors.black.withOpacity(0.4),
+      spreadRadius: 1,
+      blurRadius: 5,
+      offset: Offset(0, 3), // changes position of shadow
+    ),
+    BoxShadow(
+      color: Colors.white.withOpacity(0.5),
+      spreadRadius: 1,
+      blurRadius: 4,
+      offset: Offset(0, -2), // changes position of shadow
+    ),
+  ];
 }
