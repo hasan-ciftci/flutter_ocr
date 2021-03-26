@@ -14,6 +14,7 @@ import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 
 part 'home_view_model.g.dart';
@@ -79,7 +80,9 @@ abstract class _HomeViewModelBase with Store {
         speed: locationModel?.speed,
         isMocked: locationModel?.isMocked,
         floor: locationModel?.floor,
-        timestamp: DateTime.now().toString(),
+        timestamp: DateFormat('dd.MM.yyyy - HH:mm:ss')
+            .format(DateTime.now())
+            .toString(),
         base64Image: _selectedImageBase64,
         username: PreferencesManager.instance
             .getStringValue(PreferencesKeys.USER_NAME),

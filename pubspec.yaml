@@ -26,6 +26,7 @@ dependencies:
   camera:
   path:
   google_maps_flutter:
+  intl: 0.15.7
 
 
 dev_dependencies:
