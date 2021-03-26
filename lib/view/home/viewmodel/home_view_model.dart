@@ -54,8 +54,8 @@ abstract class _HomeViewModelBase with Store {
     if (result == true) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
-      _getPosition();
-      scanImageOffline();
+      await _getPosition();
+      await scanImageOffline();
     } else {
       await scanImageOffline();
     }
