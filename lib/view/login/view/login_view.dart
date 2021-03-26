@@ -111,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Center buildTopic() => Center(
+  Flexible buildTopic() => Flexible(
       child: Image.asset('assets/images/logo.png'
           ''));
 
