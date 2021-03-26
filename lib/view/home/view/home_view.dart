@@ -115,13 +115,16 @@ class _HomeViewState extends State<HomeView> {
             SizedBox(height: 10),
             viewModel.scannedText != null
                 ? buildEditableLicensePlateTextField()
-                : Text("Bilgi yok"),
+                : Text(
+                    "Plaka tespiti için kameranızı plakaya odaklayın ve fotoğraf çekin",
+                    textAlign: TextAlign.center,
+                  ),
             SizedBox(height: 20),
             BoldHeaderText(text: 'KONUM BİLGİSİ'),
             SizedBox(height: 10),
             viewModel.locationModel != null
                 ? buildCoordinationsText()
-                : Text("Bilgi yok"),
+                : Text("Konum, plaka analizinden sonra otomatik olarak eklenir"),
           ],
         ),
       ),
