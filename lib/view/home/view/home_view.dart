@@ -134,15 +134,16 @@ class _HomeViewState extends State<HomeView> {
         bool isAvailable =
             viewModel.scannedText != null && !viewModel.isLoading;
         return CustomElevatedButton(
-          icon: Icons.save,
-          buttonColor:
-              !isAvailable ? ColorConstants.ISPARK_YELLOW : Colors.green,
-          buttonText: Text(!isAvailable ? "Fotoğraf Çek" : "Kaydet"),
-          buttonTextColor: ColorConstants.ISPARK_WHITE,
-          onPressed: !isAvailable
-              ? viewModel.getImageFile
-              : () async => viewModel.saveLicensePlate(),
-        );
+            icon: Icons.save,
+            buttonColor:
+                !isAvailable ? ColorConstants.ISPARK_YELLOW : Colors.green,
+            buttonText: Text(!isAvailable ? "Fotoğraf Çek" : "Kaydet"),
+            buttonTextColor: ColorConstants.ISPARK_WHITE,
+            onPressed: viewModel.isLoading
+                ? null
+                : isAvailable
+                    ? () async => viewModel.saveLicensePlate()
+                    : () async => viewModel.getImageFile());
       },
     );
   }

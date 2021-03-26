@@ -118,7 +118,6 @@ abstract class _HomeViewModelBase with Store {
 
   convertImageToBase64(File imageReadyToBeConverted) async {
     final bytes = await File(imageReadyToBeConverted.path).readAsBytes();
-    print(base64.encode(bytes));
     _selectedImageBase64 = base64.encode(bytes);
   }
 
