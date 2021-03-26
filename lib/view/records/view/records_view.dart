@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/record_card.dart';
+import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 
@@ -23,22 +24,19 @@ class _RecordsViewState extends State<RecordsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
-      child: Scaffold(
-        appBar: buildAppBar(),
-        backgroundColor: Colors.transparent,
-        body: FutureBuilder(
-          future: recordsViewModel.getPlates(),
-          builder: (BuildContext context,
-              AsyncSnapshot<List<RecordModel>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return buildRecordList(snapshot);
-            } else {
-              return buildCircularProgressIndicator();
-            }
-          },
-        ),
+    return Scaffold(
+      appBar: buildAppBar(),
+      backgroundColor: ColorConstants.ISPARK_WHITE,
+      body: FutureBuilder(
+        future: recordsViewModel.getPlates(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<RecordModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return buildRecordList(snapshot);
+          } else {
+            return buildCircularProgressIndicator();
+          }
+        },
       ),
     );
   }

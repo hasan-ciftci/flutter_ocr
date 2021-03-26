@@ -19,27 +19,20 @@ class RecordCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        height: 80,
-        decoration: StyleConstants.kRecordCardDecoration,
-        child: Row(
-          children: [
-            Expanded(
-              child: buildId(),
+        onTap: onPressed,
+        child: Container(
+          decoration: BoxDecoration(boxShadow: StyleConstants.kBoxShadow),
+          child: ListTile(
+            tileColor: Colors.white,
+            isThreeLine: false,
+            title: buildPlateText(),
+            subtitle: buildDateText(),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: ColorConstants.ISPARK_YELLOW,
             ),
-            Expanded(
-              flex: 3,
-              child: buildPlateText(),
-            ),
-            Expanded(
-              flex: 3,
-              child: buildDateColumn(),
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 
   Text buildId() {
@@ -65,9 +58,7 @@ class RecordCard extends StatelessWidget {
   Text buildDateText() {
     return Text(
       date,
-      textAlign: TextAlign.center,
       style: TextStyle(
-          shadows: StyleConstants.kTextDoubleShadow,
           color: ColorConstants.ISPARK_BLACK,
           fontWeight: FontWeight.bold,
           fontSize: 16),
@@ -87,9 +78,7 @@ class RecordCard extends StatelessWidget {
   Text buildPlateText() {
     return Text(
       plate,
-      textAlign: TextAlign.center,
       style: TextStyle(
-          shadows: StyleConstants.kTextDoubleShadow,
           color: ColorConstants.ISPARK_BLUE,
           fontWeight: FontWeight.bold,
           fontSize: 18),
