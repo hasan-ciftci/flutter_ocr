@@ -190,12 +190,18 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Text buildCoordinationsText() {
-    return Text(
-      viewModel.locationModel.latitude.toString() +
-          " , " +
-          viewModel.locationModel.longitude.toString(),
-      style: TextStyle(color: ColorConstants.ISPARK_BLACK),
+  Observer buildCoordinationsText() {
+    return Observer(
+      builder: (BuildContext context) {
+        return viewModel.locationModel != null
+            ? Text(
+                viewModel.locationModel.latitude.toString() +
+                    " , " +
+                    viewModel.locationModel.longitude.toString(),
+                style: TextStyle(color: ColorConstants.ISPARK_BLACK),
+              )
+            : Text("Konum servisine ulaşılamıyor");
+      },
     );
   }
 

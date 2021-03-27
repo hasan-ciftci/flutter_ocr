@@ -54,8 +54,7 @@ abstract class _HomeViewModelBase with Store {
     if (result == true) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
-      await _getPosition();
-      await scanImageOffline();
+      await scanImageOnline();
     } else {
       await scanImageOffline();
     }
@@ -165,12 +164,28 @@ abstract class _HomeViewModelBase with Store {
     }
   }
 
+  Future<void> scanImageOnline() async {
+    if (_selectedImage != null) {
+      _changeScanningStatus();
+      await _getPosition();
+      _producedText =
+          await OcrService.instance.getTextFromImage(_selectedImage);
+      if (_producedText.isNotEmpty) {
+        _updateScannedText(_producedText);
+      } else {
+        showSnackBar(
+            status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
+      }
+      _changeScanningStatus();
+    }
+  }
+
   Future _getPosition() async {
     try {
       final position = await LocationService.instance.determinePosition();
       if (position != null) {
         locationModel = LocationModel(
-            latitude: position.longitude,
+            latitude: position.latitude,
             longitude: position.longitude,
             altitude: position.altitude,
             heading: position.heading,
