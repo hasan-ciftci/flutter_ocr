@@ -52,7 +52,10 @@ class _SingleRecordViewState extends State<SingleRecordView> {
                           ],
                         ),
                       ),
-                      Expanded(flex: 3, child: buildMap(snapshot)),
+                      snapshot.data.latitude != null &&
+                              snapshot.data.longitude != null
+                          ? Expanded(flex: 3, child: buildMap(snapshot))
+                          : SizedBox(),
                     ],
                   );
                 } else {
@@ -87,7 +90,9 @@ class _SingleRecordViewState extends State<SingleRecordView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(flex: 6, child: buildPlateText(snapshot)),
-          Expanded(child: buildCoordinationText(snapshot)),
+          snapshot.data.latitude != null && snapshot.data.longitude != null
+              ? Expanded(child: buildCoordinationText(snapshot))
+              : SizedBox(),
         ],
       ),
     );
