@@ -5,13 +5,17 @@ import 'package:camera/camera.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/enums.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
+import 'package:flutter_ocr/core/init/network/network_manager.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
+import 'package:flutter_ocr/product/models/response/scan_response_model.dart';
+import 'package:flutter_ocr/product/models/service_record_model.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +37,7 @@ abstract class _HomeViewModelBase with Store {
 
   CameraController controller;
   Future<void> initializeControllerFuture;
+  ScanResponseModel _onlineScanResponseModel;
 
   init() {
     editingController = TextEditingController();
@@ -66,6 +71,51 @@ abstract class _HomeViewModelBase with Store {
   }
 
   Future<void> saveLicensePlate() async {
+    bool result = await DataConnectionChecker().hasConnection;
+    if (result == true) {
+      //Scan Image with API
+      //TODO:IMPLEMENT API CONNECTION
+      saveLicensePlateOnline();
+    } else {
+      await saveLicensePlateOffline();
+    }
+  }
+
+  void saveLicensePlateOnline() async {
+    _changeLoadingStatus();
+    try {
+      ServiceRecordModel serviceRecordModel = ServiceRecordModel(
+        licensePlateImage: _onlineScanResponseModel.data.licensePlateImage,
+        location: "${locationModel.latitude},${locationModel.longitude}",
+        personalNameSurname: PreferencesManager.instance
+            .getStringValue(PreferencesKeys.USER_NAME),
+        licensePlate: _onlineScanResponseModel.data.licensePlate,
+        id: 0,
+        status: 0,
+        createdOn: DateTime.now().toIso8601String(),
+        createdBy: 0,
+      );
+      var recordHistoryResponse = await NetworkManager.instance
+          .dioPost<ServiceRecordModel>(
+              baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
+              endPoint: ApiConstants.ADD_RECORD_ENDPOINT,
+              model: serviceRecordModel);
+      showSnackBar(status: SnackBarStatus.SUCCESS, message: "Kaydedildi");
+      /*
+    Control data.
+    RecordHistoryModel recordHistoryModel =
+        RecordHistoryModel.fromJson(recordHistoryResponse);
+    print(recordHistoryModel.toJson());
+    */
+    } catch (e) {
+      showSnackBar(status: SnackBarStatus.FAIL, message: "Server hatası");
+    }
+
+    _changeLoadingStatus();
+    prepareToNewFile();
+  }
+
+  Future<void> saveLicensePlateOffline() async {
     //TODO: IMPLEMENT SAVING OPERATIONS FOR API
     _changeLoadingStatus();
     await recordDataBaseProvider.insertRecord(
@@ -169,9 +219,10 @@ abstract class _HomeViewModelBase with Store {
     try {
       if (_selectedImage != null) {
         await _getPosition();
-        _producedText =
+        _onlineScanResponseModel =
             await OcrService.instance.getTextFromImageOnline(_selectedImage);
-        if (_producedText.isNotEmpty) {
+        if (_onlineScanResponseModel.data.licensePlate.isNotEmpty) {
+          _producedText = _onlineScanResponseModel.data.licensePlate;
           _updateScannedText(_producedText);
         } else {
           showSnackBar(

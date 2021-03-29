@@ -1,15 +1,15 @@
 import 'package:flutter_ocr/product/models/pagination_model.dart';
 import 'package:flutter_ocr/product/models/service_record_model.dart';
 
-class GetRecordModel {
+class RecordHistoryModel {
   PaginationMetaData paginationMetaData;
-  List<ServiceRecordModel> data;
+  ServiceRecordModel data;
   bool result;
   String message;
   int httpStatusCode;
   String exceptionCode;
 
-  GetRecordModel(
+  RecordHistoryModel(
       {this.paginationMetaData,
       this.data,
       this.result,
@@ -17,16 +17,13 @@ class GetRecordModel {
       this.httpStatusCode,
       this.exceptionCode});
 
-  GetRecordModel.fromJson(Map<String, dynamic> json) {
+  RecordHistoryModel.fromJson(Map<String, dynamic> json) {
     paginationMetaData = json['paginationMetaData'] != null
         ? new PaginationMetaData.fromJson(json['paginationMetaData'])
         : null;
-    if (json['data'] != null) {
-      data = new List<ServiceRecordModel>();
-      json['data'].forEach((v) {
-        data.add(new ServiceRecordModel.fromJson(v));
-      });
-    }
+    data = json['data'] != null
+        ? new ServiceRecordModel.fromJson(json['data'])
+        : null;
     result = json['result'];
     message = json['message'];
     httpStatusCode = json['httpStatusCode'];
@@ -39,7 +36,7 @@ class GetRecordModel {
       data['paginationMetaData'] = this.paginationMetaData.toJson();
     }
     if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
+      data['data'] = this.data.toJson();
     }
     data['result'] = this.result;
     data['message'] = this.message;

@@ -95,15 +95,15 @@ class _HomeViewState extends State<HomeView> {
     return Observer(
       builder: (BuildContext context) {
         return viewModel.isLoading
-            ? CircularProgressIndicator()
+            ? SizedBox()
             : viewModel.isScanning
-                ? buildScanningAnimation()
+                ? buildScanningAnimation(message: 'Plaka taranıyor')
                 : buildOcrResultText();
       },
     );
   }
 
-  Center buildScanningAnimation() => Center(
+  Center buildScanningAnimation({@required String message}) => Center(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -112,7 +112,7 @@ class _HomeViewState extends State<HomeView> {
             width: 10,
           ),
           Text(
-            "Plaka taranıyor",
+            message,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],

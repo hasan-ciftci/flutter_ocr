@@ -28,7 +28,7 @@ class OcrService {
     return visionText.text ?? "";
   }
 
-  Future<String> getTextFromImageOnline(File imageFile) async {
+  Future<ScanResponseModel> getTextFromImageOnline(File imageFile) async {
     FormData formData = FormData.fromMap(
         {'Image': await MultipartFile.fromFile(imageFile.path)});
 
@@ -39,6 +39,6 @@ class OcrService {
     );
     ScanResponseModel scanResponseModel =
         ScanResponseModel.fromJson(scanResponse);
-    return scanResponseModel.data.licensePlate;
+    return scanResponseModel;
   }
 }

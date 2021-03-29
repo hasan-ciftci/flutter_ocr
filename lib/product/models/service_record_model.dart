@@ -1,4 +1,6 @@
-class ServiceRecordModel {
+import 'package:flutter_ocr/core/base/base_model.dart';
+
+class ServiceRecordModel extends BaseModel {
   String licensePlate;
   String location;
   String personalNameSurname;
@@ -56,5 +58,10 @@ class ServiceRecordModel {
     data['deletedOn'] = this.deletedOn;
     data['deletedBy'] = this.deletedBy;
     return data;
+  }
+
+  @override
+  fromJson(Map<String, dynamic> json) {
+    return ServiceRecordModel.fromJson(json);
   }
 }
