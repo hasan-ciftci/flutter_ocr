@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/base/base_model.dart';
-import 'package:flutter_ocr/core/constants/api_constants.dart';
 
 class NetworkManager {
   static NetworkManager _instance;
@@ -15,15 +15,27 @@ class NetworkManager {
   Dio _dio;
 
   NetworkManager._init() {
-    final baseOptions = BaseOptions(
-      baseUrl: ApiConstants.BASE_URL,
-    );
-
-    _dio = Dio(baseOptions);
+    _dio = Dio();
   }
 
-  Future dioPost<T extends BaseModel>(String endPoint, T model) async {
-    final response = await _dio.post(endPoint, data: model.toJson());
+  Future dioPost<T extends BaseModel>(
+      {@required String baseURL,
+      @required String endPoint,
+      @required T model}) async {
+    final response = await _dio.post(baseURL + endPoint, data: model.toJson());
+    switch (response.statusCode) {
+      case HttpStatus.ok:
+        final responseBody = response.data;
+        return responseBody;
+      default:
+    }
+  }
+
+  Future dioPostImage<T extends FormData>(
+      {@required String baseURL,
+      @required String endPoint,
+      @required T file}) async {
+    final response = await _dio.post(baseURL + endPoint, data: file);
     switch (response.statusCode) {
       case HttpStatus.ok:
         final responseBody = response.data;

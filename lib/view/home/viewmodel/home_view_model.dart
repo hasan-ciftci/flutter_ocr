@@ -153,7 +153,7 @@ abstract class _HomeViewModelBase with Store {
     if (_selectedImage != null) {
       _changeScanningStatus();
       _producedText =
-          await OcrService.instance.getTextFromImage(_selectedImage);
+          await OcrService.instance.getTextFromImageOffline(_selectedImage);
       if (_producedText.isNotEmpty) {
         _updateScannedText(_producedText);
       } else {
@@ -165,19 +165,26 @@ abstract class _HomeViewModelBase with Store {
   }
 
   Future<void> scanImageOnline() async {
-    if (_selectedImage != null) {
-      _changeScanningStatus();
-      await _getPosition();
-      _producedText =
-          await OcrService.instance.getTextFromImage(_selectedImage);
-      if (_producedText.isNotEmpty) {
-        _updateScannedText(_producedText);
-      } else {
-        showSnackBar(
-            status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
+    _changeScanningStatus();
+    try {
+      if (_selectedImage != null) {
+        await _getPosition();
+        _producedText =
+            await OcrService.instance.getTextFromImageOnline(_selectedImage);
+        if (_producedText.isNotEmpty) {
+          _updateScannedText(_producedText);
+        } else {
+          showSnackBar(
+              status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
+        }
       }
-      _changeScanningStatus();
+    } catch (e) {
+      print(e);
+      showSnackBar(status: SnackBarStatus.FAIL, message: "Servis hatası");
+
+      prepareToNewFile();
     }
+    _changeScanningStatus();
   }
 
   Future _getPosition() async {
