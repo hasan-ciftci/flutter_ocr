@@ -26,8 +26,7 @@ abstract class _LoginViewModelBase with Store {
   @action
   Future<void> logInUser() async {
     isLoadingChange();
-    await Future.delayed(Duration(seconds: 3));
-    _loginService.loginUser(User(
+    await _loginService.loginUser(User(
         username: usernameController.text, password: passwordController.text));
     isLoadingChange();
   }
