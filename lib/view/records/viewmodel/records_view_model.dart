@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
+import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 
 import '../records_service.dart';
 
@@ -24,10 +26,15 @@ abstract class _RecordsViewModelBase with Store {
   ObservableList users = ObservableList();
   @observable
   List newData = [];
+  BuildContext myContext;
 
   init() {
     recordDataBaseProvider = DatabaseService.instance;
     _recordsService = RecordsService();
+  }
+
+  void getContext(BuildContext ctx) {
+    myContext = ctx;
   }
 
   @action
@@ -47,11 +54,18 @@ abstract class _RecordsViewModelBase with Store {
 
     final fetchedNewRecords = await _recordsService.fetchRecords(
         quantityOfData: 10, paginationPage: page);
+    List recordData = fetchedNewRecords['data'];
     newData
       ..clear()
-      ..addAll(fetchedNewRecords['data']);
+      ..addAll(recordData);
+
+    updateRecordNotifier(recordData);
 
     completeFetchingData();
+  }
+
+  updateRecordNotifier(List recordData) {
+    Provider.of<RecordNotifier>(myContext, listen: false).addRecord(recordData);
   }
 
   Future<List<RecordModel>> getPlates() async {
@@ -73,4 +87,8 @@ abstract class _RecordsViewModelBase with Store {
 
   @observable
   int id;
+
+  dispose() {
+    Provider.of<RecordNotifier>(myContext, listen: false).clearList();
+  }
 }

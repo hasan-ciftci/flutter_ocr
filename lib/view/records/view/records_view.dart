@@ -4,8 +4,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/record_card.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
+import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 
 import '../viewmodel/records_view_model.dart';
 
@@ -33,6 +35,7 @@ class _RecordsViewState extends State<RecordsView> {
 
   @override
   Widget build(BuildContext context) {
+    recordsViewModel.getContext(context);
     return Scaffold(
       backgroundColor: ColorConstants.ISPARK_WHITE,
       appBar: buildAppBar(),
@@ -114,7 +117,13 @@ class _RecordsViewState extends State<RecordsView> {
         plate: recordsViewModel.users[index]['licensePlate'],
         date: recordsViewModel.users[index]['createdOn'],
         id: recordsViewModel.users[index]['id'],
-        onPressed: () {});
+        onPressed: () {
+          final selectedIndex =
+              Provider.of<RecordNotifier>(context, listen: false)
+                  .getRecord(index)["id"];
+
+          recordsViewModel.navigateToSingleRecordViewPage(selectedIndex);
+        });
   }
 
   RecordCard buildOfflineRecordCard(
@@ -153,4 +162,10 @@ class _RecordsViewState extends State<RecordsView> {
       );
     },
   );
+
+  @override
+  void dispose() {
+    super.dispose();
+    recordsViewModel.dispose();
+  }
 }
