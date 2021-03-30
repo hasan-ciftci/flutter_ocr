@@ -42,10 +42,11 @@ abstract class _RecordsViewModelBase with Store {
     page++;
   }
 
-  Future<void> getMoreData(int index) async {
+  Future<void> getMoreData() async {
     startFetchingData();
 
-    final fetchedNewRecords = await _recordsService.fetchRecords(page, 10);
+    final fetchedNewRecords = await _recordsService.fetchRecords(
+        quantityOfData: 10, paginationPage: page);
     newData
       ..clear()
       ..addAll(fetchedNewRecords['data']);

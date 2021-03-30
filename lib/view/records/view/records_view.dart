@@ -22,11 +22,11 @@ class _RecordsViewState extends State<RecordsView> {
     super.initState();
     recordsViewModel = RecordsViewModel();
     recordsViewModel.init();
-    recordsViewModel.getMoreData(recordsViewModel.page);
+    recordsViewModel.getMoreData();
     recordsViewModel.scrollController.addListener(() {
       if (recordsViewModel.scrollController.position.pixels ==
           recordsViewModel.scrollController.position.maxScrollExtent) {
-        recordsViewModel.getMoreData(recordsViewModel.page);
+        recordsViewModel.getMoreData();
       }
     });
   }
