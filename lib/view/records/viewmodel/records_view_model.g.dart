@@ -70,18 +70,18 @@ mixin _$RecordsViewModel on _RecordsViewModelBase, Store {
     });
   }
 
-  final _$tListAtom = Atom(name: '_RecordsViewModelBase.tList');
+  final _$newDataAtom = Atom(name: '_RecordsViewModelBase.newData');
 
   @override
-  List<dynamic> get tList {
-    _$tListAtom.reportRead();
-    return super.tList;
+  List<dynamic> get newData {
+    _$newDataAtom.reportRead();
+    return super.newData;
   }
 
   @override
-  set tList(List<dynamic> value) {
-    _$tListAtom.reportWrite(value, super.tList, () {
-      super.tList = value;
+  set newData(List<dynamic> value) {
+    _$newDataAtom.reportWrite(value, super.newData, () {
+      super.newData = value;
     });
   }
 
@@ -143,7 +143,7 @@ page: ${page},
 scrollController: ${scrollController},
 isLoading: ${isLoading},
 users: ${users},
-tList: ${tList},
+newData: ${newData},
 id: ${id}
     ''';
   }

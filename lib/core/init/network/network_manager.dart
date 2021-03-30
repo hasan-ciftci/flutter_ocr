@@ -31,6 +31,20 @@ class NetworkManager {
     }
   }
 
+  Future dioGet<T extends BaseModel>(
+      {@required String baseURL,
+      @required String endPoint,
+      @required T model}) async {
+    final response =
+        await _dio.get(baseURL + endPoint, queryParameters: model.toJson());
+    switch (response.statusCode) {
+      case HttpStatus.ok:
+        final responseBody = response.data;
+        return responseBody;
+      default:
+    }
+  }
+
   Future dioPostImage<T extends FormData>(
       {@required String baseURL,
       @required String endPoint,

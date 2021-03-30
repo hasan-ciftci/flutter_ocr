@@ -1,9 +1,10 @@
+import 'package:flutter_ocr/core/base/base_model.dart';
 import 'package:flutter_ocr/product/models/pagination_model.dart';
 import 'package:flutter_ocr/product/models/service_record_model.dart';
 
-class RecordHistoryModel {
+class RecordHistoryModel implements BaseModel {
   PaginationMetaData paginationMetaData;
-  ServiceRecordModel data;
+  List<ServiceRecordModel> data;
   bool result;
   String message;
   int httpStatusCode;
@@ -21,9 +22,12 @@ class RecordHistoryModel {
     paginationMetaData = json['paginationMetaData'] != null
         ? new PaginationMetaData.fromJson(json['paginationMetaData'])
         : null;
-    data = json['data'] != null
-        ? new ServiceRecordModel.fromJson(json['data'])
-        : null;
+    if (json['data'] != null) {
+      data = new List<ServiceRecordModel>();
+      json['data'].forEach((v) {
+        data.add(new ServiceRecordModel.fromJson(v));
+      });
+    }
     result = json['result'];
     message = json['message'];
     httpStatusCode = json['httpStatusCode'];
@@ -36,12 +40,17 @@ class RecordHistoryModel {
       data['paginationMetaData'] = this.paginationMetaData.toJson();
     }
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data.map((v) => v.toJson()).toList();
     }
     data['result'] = this.result;
     data['message'] = this.message;
     data['httpStatusCode'] = this.httpStatusCode;
     data['exceptionCode'] = this.exceptionCode;
     return data;
+  }
+
+  @override
+  fromJson(Map<String, dynamic> json) {
+    RecordHistoryModel.fromJson(json);
   }
 }
