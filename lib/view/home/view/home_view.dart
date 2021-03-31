@@ -83,7 +83,21 @@ class _HomeViewState extends State<HomeView> {
       future: viewModel.initializeControllerFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return CameraPreview(viewModel.controller);
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              CameraPreview(viewModel.controller),
+              FractionallySizedBox(
+                widthFactor: 0.6,
+                heightFactor: 0.25,
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: ColorConstants.ISPARK_YELLOW, width: 3.0)),
+                ),
+              ),
+            ],
+          );
         } else {
           return Center(child: CircularProgressIndicator());
         }
@@ -225,7 +239,7 @@ class _HomeViewState extends State<HomeView> {
           height: 15,
         ),
         Text(
-          "Kameranızı plakaya odaklayın",
+          "Plakayı çerçeve içine alın",
           textAlign: TextAlign.center,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
