@@ -209,6 +209,7 @@ abstract class _HomeViewModelBase with Store {
       if (_producedText.isNotEmpty) {
         _updateScannedText(_producedText);
       } else {
+        selectedImage = null;
         showSnackBar(
             status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
       }
@@ -227,6 +228,7 @@ abstract class _HomeViewModelBase with Store {
           _producedText = _onlineScanResponseModel.data.licensePlate;
           _updateScannedText(_producedText);
         } else {
+          selectedImage = null;
           showSnackBar(
               status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
         }
