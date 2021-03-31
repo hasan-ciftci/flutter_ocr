@@ -1,9 +1,11 @@
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/custom_drawer.dart';
 import 'package:flutter_ocr/core/components/custom_elevated_button.dart';
+import 'package:flutter_ocr/core/components/scanner_bar_animation.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/view/home/viewmodel/home_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -15,14 +17,35 @@ class HomeView extends StatefulWidget {
   _HomeViewState createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView>
+    with SingleTickerProviderStateMixin {
   HomeViewModel viewModel;
+  AnimationController _animationController;
+  bool _animationStopped = false;
 
   @override
   void initState() {
+    _animationController = new AnimationController(
+        duration: new Duration(seconds: 1), vsync: this);
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        animateScanAnimation(true);
+      } else if (status == AnimationStatus.dismissed) {
+        animateScanAnimation(false);
+      }
+    });
     super.initState();
     viewModel = HomeViewModel();
     viewModel.init();
+  }
+
+  void animateScanAnimation(bool reverse) {
+    if (reverse) {
+      _animationController.reverse(from: 1.0);
+    } else {
+      _animationController.forward(from: 0.0);
+    }
   }
 
   @override
@@ -44,29 +67,8 @@ class _HomeViewState extends State<HomeView> {
                     fit: StackFit.expand,
                     children: [
                       buildCameraPreview(),
-                      Observer(
-                        builder: (BuildContext context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: viewModel.scannedText != null &&
-                                      !viewModel.isLoading
-                                  ? FloatingActionButton(
-                                      backgroundColor: Colors.red,
-                                      onPressed: () {
-                                        viewModel.prepareToNewFile();
-                                      },
-                                      child: Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : SizedBox(),
-                            ),
-                          );
-                        },
-                      )
+                      buildDeleteTakenImageButton(),
+                      buildScannerBar(),
                     ],
                   )),
               Expanded(flex: 3, child: buildScannedImageText()),
@@ -75,6 +77,44 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
+    );
+  }
+
+  Observer buildDeleteTakenImageButton() {
+    return Observer(
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: viewModel.scannedText != null && !viewModel.isLoading
+                ? FloatingActionButton(
+                    backgroundColor: Colors.red,
+                    onPressed: () {
+                      viewModel.prepareToNewFile();
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  )
+                : SizedBox(),
+          ),
+        );
+      },
+    );
+  }
+
+  Observer buildScannerBar() {
+    return Observer(
+      builder: (BuildContext context) {
+        return viewModel.isScanning
+            ? ImageScannerAnimation(
+                _animationStopped,
+                animation: _animationController,
+              )
+            : SizedBox();
+      },
     );
   }
 
@@ -97,14 +137,21 @@ class _HomeViewState extends State<HomeView> {
                       : SizedBox();
                 },
               ),
-              FractionallySizedBox(
-                widthFactor: 0.6,
-                heightFactor: 0.25,
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: ColorConstants.ISPARK_YELLOW, width: 3.0)),
-                ),
+              Observer(
+                builder: (BuildContext context) {
+                  return !viewModel.isScanning
+                      ? FractionallySizedBox(
+                          widthFactor: 0.6,
+                          heightFactor: 0.25,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: ColorConstants.ISPARK_YELLOW,
+                                    width: 3.0)),
+                          ),
+                        )
+                      : SizedBox();
+                },
               ),
             ],
           );
