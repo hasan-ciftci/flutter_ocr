@@ -22,6 +22,8 @@ class _HomeViewState extends State<HomeView>
   HomeViewModel viewModel;
   AnimationController _animationController;
   bool _animationStopped = false;
+  String scanText = "Scan";
+  bool scanning = false;
 
   @override
   void initState() {
@@ -237,7 +239,16 @@ class _HomeViewState extends State<HomeView>
                 ? null
                 : isAvailable
                     ? () async => viewModel.saveLicensePlate()
-                    : () async => viewModel.getImageFile());
+                    : () async {
+                        animateScanAnimation(false);
+                        setState(() {
+                          _animationStopped = false;
+                          scanning = true;
+                          scanText = "Stop";
+                        });
+
+                        viewModel.getImageFile();
+                      });
       },
     );
   }
