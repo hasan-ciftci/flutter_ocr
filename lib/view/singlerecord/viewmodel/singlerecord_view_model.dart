@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,6 +12,12 @@ class SingleRecordViewModel = _SingleRecordViewModelBase
     with _$SingleRecordViewModel;
 
 abstract class _SingleRecordViewModelBase with Store {
+  BuildContext myContext;
+
+  setContext(BuildContext ctx) {
+    myContext = ctx;
+  }
+
   Completer<GoogleMapController> controller = Completer();
 
   CameraPosition markedPosition;
