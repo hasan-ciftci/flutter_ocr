@@ -265,7 +265,9 @@ abstract class _HomeViewModelBase with Store {
   }
 
   logout() {
-    //TODO: IMPLEMENT LOGOUT
+    PreferencesManager.instance.clearAll();
+    NavigationService.instance
+        .navigateToPageClear(path: NavigationConstants.LOGIN_VIEW);
   }
 
   showSnackBar({SnackBarStatus status, String message}) {
