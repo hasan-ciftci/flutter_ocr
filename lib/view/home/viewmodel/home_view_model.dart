@@ -27,7 +27,8 @@ class HomeViewModel = _HomeViewModelBase with _$HomeViewModel;
 
 abstract class _HomeViewModelBase with Store {
   String _producedText;
-  File _selectedImage;
+  @observable
+  File selectedImage;
   String _selectedImageBase64;
   TextEditingController editingController;
   FocusNode focusNode;
@@ -154,9 +155,9 @@ abstract class _HomeViewModelBase with Store {
     } catch (e) {
       print(e);
     }
-    _selectedImage = File(previewImage.path);
-    if (_selectedImage != null) {
-      await convertImageToBase64(_selectedImage);
+    selectedImage = File(previewImage.path);
+    if (selectedImage != null) {
+      await convertImageToBase64(selectedImage);
       scanImage();
     }
   }
@@ -197,13 +198,14 @@ abstract class _HomeViewModelBase with Store {
   void prepareToNewFile() {
     scannedText = null;
     locationModel = null;
+    selectedImage = null;
   }
 
   Future<void> scanImageOffline() async {
-    if (_selectedImage != null) {
+    if (selectedImage != null) {
       _changeScanningStatus();
       _producedText =
-          await OcrService.instance.getTextFromImageOffline(_selectedImage);
+          await OcrService.instance.getTextFromImageOffline(selectedImage);
       if (_producedText.isNotEmpty) {
         _updateScannedText(_producedText);
       } else {
@@ -217,10 +219,10 @@ abstract class _HomeViewModelBase with Store {
   Future<void> scanImageOnline() async {
     _changeScanningStatus();
     try {
-      if (_selectedImage != null) {
+      if (selectedImage != null) {
         await _getPosition();
         _onlineScanResponseModel =
-            await OcrService.instance.getTextFromImageOnline(_selectedImage);
+            await OcrService.instance.getTextFromImageOnline(selectedImage);
         if (_onlineScanResponseModel.data.licensePlate.isNotEmpty) {
           _producedText = _onlineScanResponseModel.data.licensePlate;
           _updateScannedText(_producedText);

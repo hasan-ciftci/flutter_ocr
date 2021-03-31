@@ -87,6 +87,16 @@ class _HomeViewState extends State<HomeView> {
             fit: StackFit.expand,
             children: [
               CameraPreview(viewModel.controller),
+              Observer(
+                builder: (BuildContext context) {
+                  return viewModel.selectedImage != null
+                      ? Image.file(
+                          viewModel.selectedImage,
+                          fit: BoxFit.fill,
+                        )
+                      : SizedBox();
+                },
+              ),
               FractionallySizedBox(
                 widthFactor: 0.6,
                 heightFactor: 0.25,

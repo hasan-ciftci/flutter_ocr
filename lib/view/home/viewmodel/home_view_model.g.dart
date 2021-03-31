@@ -9,6 +9,21 @@ part of 'home_view_model.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HomeViewModel on _HomeViewModelBase, Store {
+  final _$selectedImageAtom = Atom(name: '_HomeViewModelBase.selectedImage');
+
+  @override
+  File get selectedImage {
+    _$selectedImageAtom.reportRead();
+    return super.selectedImage;
+  }
+
+  @override
+  set selectedImage(File value) {
+    _$selectedImageAtom.reportWrite(value, super.selectedImage, () {
+      super.selectedImage = value;
+    });
+  }
+
   final _$isLoadingAtom = Atom(name: '_HomeViewModelBase.isLoading');
 
   @override
@@ -145,6 +160,7 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   @override
   String toString() {
     return '''
+selectedImage: ${selectedImage},
 isLoading: ${isLoading},
 isScanning: ${isScanning},
 scannedText: ${scannedText},
