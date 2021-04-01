@@ -105,7 +105,7 @@ abstract class _HomeViewModelBase with Store {
             .getStringValue(PreferencesKeys.USER_NAME),
         licensePlate: _onlineScanResponseModel.data.licensePlate,
         id: 0,
-        status: 0,
+        status: 1,
         createdOn: DateTime.now().toIso8601String(),
         createdBy: 0,
       );
