@@ -51,7 +51,7 @@ abstract class _HomeViewModelBase with Store {
             name: "0",
             lensDirection: CameraLensDirection.back,
             sensorOrientation: 90),
-        ResolutionPreset.medium);
+        ResolutionPreset.high);
     initializeControllerFuture = controller.initialize();
   }
 
@@ -205,7 +205,7 @@ abstract class _HomeViewModelBase with Store {
   Future<void> scanImageOffline() async {
     if (selectedImage != null) {
       selectedImage = await FlutterNativeImage.compressImage(selectedImage.path,
-          quality: 5);
+          quality: 20);
       _changeScanningStatus();
       _producedText =
           await OcrService.instance.getTextFromImageOffline(selectedImage);
@@ -226,7 +226,7 @@ abstract class _HomeViewModelBase with Store {
       if (selectedImage != null) {
         selectedImage = await FlutterNativeImage.compressImage(
             selectedImage.path,
-            quality: 5);
+            quality: 20);
 
         await _getPosition();
         _onlineScanResponseModel =
