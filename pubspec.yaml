@@ -33,6 +33,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   provider: ^5.0.0
   flutter_native_image: ^0.0.5
+  connectivity: ^3.0.3
 
 
 dev_dependencies:

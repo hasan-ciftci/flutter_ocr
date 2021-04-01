@@ -7,6 +7,7 @@ import 'package:flutter_ocr/core/components/custom_drawer.dart';
 import 'package:flutter_ocr/core/components/custom_elevated_button.dart';
 import 'package:flutter_ocr/core/components/scanner_bar_animation.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
+import 'package:flutter_ocr/core/init/connectivity/connectivity_service.dart';
 import 'package:flutter_ocr/view/home/viewmodel/home_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -24,9 +25,14 @@ class _HomeViewState extends State<HomeView>
   bool _animationStopped = false;
   String scanText = "Scan";
   bool scanning = false;
+  MyConnectivity _connectivity = MyConnectivity.instance;
 
   @override
   void initState() {
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      print(source.keys.toList()[0]);
+    });
     _animationController = new AnimationController(
         duration: new Duration(seconds: 1), vsync: this);
 
