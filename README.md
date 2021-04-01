@@ -1,1 +1,1 @@
-# İspark Scanner Mobil App
+# İspark Scanner Mobil App (Scanner)
