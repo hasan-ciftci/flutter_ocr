@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 import 'package:flutter_ocr/core/init/network/network_manager.dart';
+import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 import 'package:flutter_ocr/product/models/response/scan_response_model.dart';
@@ -20,6 +22,7 @@ import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 
 part 'home_view_model.g.dart';
 
@@ -62,10 +65,13 @@ abstract class _HomeViewModelBase with Store {
 
   @action
   Future<void> scanImage() async {
-    var a = "a";
-    if (a == "a") {
+    ConnectivityResult result =
+        Provider.of<ConnectionNotifier>(myContext, listen: false)
+            .connectivityResult;
+    if (result != ConnectivityResult.none) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
+
       await scanImageOnline();
     } else {
       await scanImageOffline();
@@ -78,8 +84,9 @@ abstract class _HomeViewModelBase with Store {
   }
 
   Future<void> saveLicensePlate() async {
-    var a = "a";
-    if (a == "a") {
+    ConnectivityResult result =
+        Provider.of<ConnectionNotifier>(myContext).connectivityResult;
+    if (result != ConnectivityResult.none) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
       saveLicensePlateOnline();
