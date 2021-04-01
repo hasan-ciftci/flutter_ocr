@@ -104,7 +104,8 @@ class _RecordsViewState extends State<RecordsView> {
       itemBuilder: (BuildContext context, int index) {
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: buildOfflineRecordCard(snapshot, index),
+          child: buildOfflineRecordCard(
+              snapshot, snapshot.data.length - index - 1),
         );
       },
     );

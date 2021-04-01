@@ -32,6 +32,7 @@ dependencies:
   intl: 0.15.7
   flutter_spinkit: ^5.0.0
   provider: ^5.0.0
+  flutter_native_image: ^0.0.5
 
 
 dev_dependencies:

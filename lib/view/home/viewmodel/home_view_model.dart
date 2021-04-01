@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/enums.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
@@ -203,6 +204,8 @@ abstract class _HomeViewModelBase with Store {
 
   Future<void> scanImageOffline() async {
     if (selectedImage != null) {
+      selectedImage = await FlutterNativeImage.compressImage(selectedImage.path,
+          quality: 5);
       _changeScanningStatus();
       _producedText =
           await OcrService.instance.getTextFromImageOffline(selectedImage);
@@ -221,6 +224,10 @@ abstract class _HomeViewModelBase with Store {
     _changeScanningStatus();
     try {
       if (selectedImage != null) {
+        selectedImage = await FlutterNativeImage.compressImage(
+            selectedImage.path,
+            quality: 5);
+
         await _getPosition();
         _onlineScanResponseModel =
             await OcrService.instance.getTextFromImageOnline(selectedImage);
