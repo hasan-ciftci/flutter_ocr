@@ -8,8 +8,10 @@ import 'package:flutter_ocr/core/components/custom_elevated_button.dart';
 import 'package:flutter_ocr/core/components/scanner_bar_animation.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/init/connectivity/connectivity_service.dart';
+import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/view/home/viewmodel/home_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/constants/style_constants.dart';
 
@@ -31,7 +33,8 @@ class _HomeViewState extends State<HomeView>
   void initState() {
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      print(source.keys.toList()[0]);
+      Provider.of<ConnectionNotifier>(context, listen: false)
+          .setConnectivityResult(source.keys.toList()[0]);
     });
     _animationController = new AnimationController(
         duration: new Duration(seconds: 1), vsync: this);
@@ -58,6 +61,7 @@ class _HomeViewState extends State<HomeView>
 
   @override
   Widget build(BuildContext context) {
+    viewModel.setContext(context);
     return Container(
       decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
       child: Scaffold(

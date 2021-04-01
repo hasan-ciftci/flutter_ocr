@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/product/models/service_record_model.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,9 @@ class ProviderService {
   List<SingleChildWidget> dependItems = [
     ChangeNotifierProvider(
       create: (context) => RecordNotifier(),
+    ),
+    ChangeNotifierProvider(
+      create: (context) => ConnectionNotifier(),
     ),
   ];
 }
@@ -53,4 +57,16 @@ class RecordNotifier extends ChangeNotifier {
   }
 
   int get index => _index;
+}
+
+class ConnectionNotifier with ChangeNotifier {
+  ConnectivityResult _connectivityResult;
+
+  ConnectivityResult get connectivityResult => _connectivityResult;
+
+  setConnectivityResult(ConnectivityResult con) {
+    print("Servis bağlantısı değişti :" + con.toString());
+    _connectivityResult = con;
+    notifyListeners();
+  }
 }

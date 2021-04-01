@@ -1,11 +1,13 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/record_card.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
+import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 
 import '../viewmodel/records_view_model.dart';
 
@@ -52,9 +54,9 @@ class _RecordsViewState extends State<RecordsView> {
   }
 
   Future<Widget> buildListView() async {
-    bool result = await DataConnectionChecker().hasConnection;
-    print(result);
-    if (result == true) {
+    ConnectivityResult result =
+        Provider.of<ConnectionNotifier>(context).connectivityResult;
+    if (result != ConnectivityResult.none) {
       return Observer(
         builder: (BuildContext context) {
           return buildOnlineListView();

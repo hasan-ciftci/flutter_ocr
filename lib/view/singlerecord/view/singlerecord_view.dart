@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
@@ -55,9 +55,9 @@ class _SingleRecordViewState extends State<SingleRecordView> {
   }
 
   Future buildBody() async {
-    bool result = await DataConnectionChecker().hasConnection;
-    print(result);
-    if (result == true) {
+    ConnectivityResult result =
+        Provider.of<ConnectionNotifier>(context).connectivityResult;
+    if (result != ConnectivityResult.none) {
       return buildBodyOnline();
     } else {
       return buildBodyOffline();

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -27,6 +26,12 @@ part 'home_view_model.g.dart';
 class HomeViewModel = _HomeViewModelBase with _$HomeViewModel;
 
 abstract class _HomeViewModelBase with Store {
+  BuildContext myContext;
+
+  setContext(BuildContext ctx) {
+    myContext = ctx;
+  }
+
   String _producedText;
   @observable
   File selectedImage;
@@ -57,8 +62,8 @@ abstract class _HomeViewModelBase with Store {
 
   @action
   Future<void> scanImage() async {
-    bool result = await DataConnectionChecker().hasConnection;
-    if (result == true) {
+    var a = "a";
+    if (a == "a") {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
       await scanImageOnline();
@@ -73,8 +78,8 @@ abstract class _HomeViewModelBase with Store {
   }
 
   Future<void> saveLicensePlate() async {
-    bool result = await DataConnectionChecker().hasConnection;
-    if (result == true) {
+    var a = "a";
+    if (a == "a") {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
       saveLicensePlateOnline();
