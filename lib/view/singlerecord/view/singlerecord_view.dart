@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
@@ -73,7 +74,6 @@ class _SingleRecordViewState extends State<SingleRecordView> {
     return Consumer<RecordNotifier>(
       builder: (BuildContext context, value, Widget child) {
         ServiceRecordModel serviceRecordModel = value.getRecord(value.index);
-        print(serviceRecordModel.licensePlateImage);
         final latLong = serviceRecordModel.location?.split(",") ?? ["", ""];
         return Column(
           children: [
@@ -127,42 +127,71 @@ class _SingleRecordViewState extends State<SingleRecordView> {
     );
   }
 
+  getImage() async {
+    Dio dio = Dio();
+    var response = await dio.get(
+        "https://parxlab-ocr-engine-root-service-dev.azurewebsites.net/api/v1/OCREngine/GetImageAsync",
+        queryParameters: {"guid": "20708648-F00F-4334-88A4-EA5C9924550E"});
+    final decodedBytes = response.data["data"];
+    return decodedBytes;
+  }
+
   buildRecordInformationOnline(ServiceRecordModel serviceRecordModel) {
     return Column(
       children: [
-        Container(
-          margin: EdgeInsets.all(20.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: StyleConstants.kBoxShadow,
-            color: Colors.white,
-          ),
-          child: FractionallySizedBox(
-            widthFactor: 1,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "Araç Plakası",
-                  textScaleFactor: 1.8,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                SelectableText(
-                  serviceRecordModel.licensePlate,
-                  textScaleFactor: 1.2,
-                  style: TextStyle(
-                      color: ColorConstants.ISPARK_BLUE_DARK,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0),
-                ),
-                Text("image"),
-              ],
+        Expanded(
+          flex: 6,
+          child: Container(
+            margin: EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: StyleConstants.kBoxShadow,
+              color: Colors.white,
+            ),
+            child: FractionallySizedBox(
+              widthFactor: 1,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Araç Plakası",
+                    textScaleFactor: 1.8,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  SelectableText(
+                    serviceRecordModel.licensePlate,
+                    textScaleFactor: 1.2,
+                    style: TextStyle(
+                        color: ColorConstants.ISPARK_BLUE_DARK,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0),
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: FutureBuilder(
+                      future: getImage(),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<dynamic> snap) {
+                        if (snap.connectionState == ConnectionState.done) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.memory(
+                              base64Decode(snap.data),
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
