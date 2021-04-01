@@ -235,10 +235,12 @@ class _SingleRecordViewState extends State<SingleRecordView> {
     );
   }
 
+  ///Since records sorted by date (reverse of original order)
+  ///Previous record is actually next record by date.
   IconButton buildNextButton() {
     return IconButton(
       onPressed: () {
-        singleRecordViewModel.getNext();
+        singleRecordViewModel.getPrevious();
       },
       icon: Icon(Icons.arrow_forward_ios),
     );
@@ -336,10 +338,12 @@ class _SingleRecordViewState extends State<SingleRecordView> {
     );
   }
 
+  ///Since records sorted by date (reverse of original order)
+  ///Next record is actually previous record by date.
   IconButton buildPreviousButton() {
     return IconButton(
       onPressed: () {
-        singleRecordViewModel.getPrevious();
+        singleRecordViewModel.getNext();
       },
       icon: Icon(Icons.arrow_back_ios),
     );
