@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
@@ -127,15 +126,6 @@ class _SingleRecordViewState extends State<SingleRecordView> {
     );
   }
 
-  getImage() async {
-    Dio dio = Dio();
-    var response = await dio.get(
-        "https://parxlab-ocr-engine-root-service-dev.azurewebsites.net/api/v1/OCREngine/GetImageAsync",
-        queryParameters: {"guid": "20708648-F00F-4334-88A4-EA5C9924550E"});
-    final decodedBytes = response.data["data"];
-    return decodedBytes;
-  }
-
   buildRecordInformationOnline(ServiceRecordModel serviceRecordModel) {
     return Column(
       children: [
@@ -174,7 +164,8 @@ class _SingleRecordViewState extends State<SingleRecordView> {
                   Flexible(
                     fit: FlexFit.loose,
                     child: FutureBuilder(
-                      future: getImage(),
+                      future: singleRecordViewModel
+                          .getImage(serviceRecordModel.licensePlateImage),
                       builder:
                           (BuildContext context, AsyncSnapshot<dynamic> snap) {
                         if (snap.connectionState == ConnectionState.done) {
