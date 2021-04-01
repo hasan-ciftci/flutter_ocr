@@ -18,7 +18,7 @@ class ProviderService {
     ChangeNotifierProvider(
       create: (context) => RecordNotifier(),
     ),
-    ChangeNotifierProvider(
+    Provider(
       create: (context) => ConnectionNotifier(),
     ),
   ];
@@ -59,7 +59,7 @@ class RecordNotifier extends ChangeNotifier {
   int get index => _index;
 }
 
-class ConnectionNotifier with ChangeNotifier {
+class ConnectionNotifier {
   ConnectivityResult _connectivityResult;
 
   ConnectivityResult get connectivityResult => _connectivityResult;
@@ -67,6 +67,5 @@ class ConnectionNotifier with ChangeNotifier {
   setConnectivityResult(ConnectivityResult con) {
     print("Servis bağlantısı değişti :" + con.toString());
     _connectivityResult = con;
-    notifyListeners();
   }
 }

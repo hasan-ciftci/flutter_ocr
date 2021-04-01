@@ -55,7 +55,7 @@ class _RecordsViewState extends State<RecordsView> {
 
   Future<Widget> buildListView() async {
     ConnectivityResult result =
-        Provider.of<ConnectionNotifier>(context).connectivityResult;
+        context.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
       return Observer(
         builder: (BuildContext context) {

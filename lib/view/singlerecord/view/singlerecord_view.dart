@@ -56,7 +56,7 @@ class _SingleRecordViewState extends State<SingleRecordView> {
 
   Future buildBody() async {
     ConnectivityResult result =
-        Provider.of<ConnectionNotifier>(context).connectivityResult;
+        context.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
       return buildBodyOnline();
     } else {

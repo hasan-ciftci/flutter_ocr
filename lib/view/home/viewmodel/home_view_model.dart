@@ -66,8 +66,7 @@ abstract class _HomeViewModelBase with Store {
   @action
   Future<void> scanImage() async {
     ConnectivityResult result =
-        Provider.of<ConnectionNotifier>(myContext, listen: false)
-            .connectivityResult;
+        myContext.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
@@ -85,7 +84,7 @@ abstract class _HomeViewModelBase with Store {
 
   Future<void> saveLicensePlate() async {
     ConnectivityResult result =
-        Provider.of<ConnectionNotifier>(myContext).connectivityResult;
+        myContext.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
