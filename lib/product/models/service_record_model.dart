@@ -3,7 +3,7 @@ import 'package:flutter_ocr/core/base/base_model.dart';
 class ServiceRecordModel extends BaseModel {
   String licensePlate;
   String location;
-  String personalNameSurname;
+  String Username;
   String licensePlateImage;
   int id;
   int status;
@@ -17,7 +17,7 @@ class ServiceRecordModel extends BaseModel {
   ServiceRecordModel(
       {this.licensePlate,
       this.location,
-      this.personalNameSurname,
+      this.Username,
       this.licensePlateImage,
       this.id,
       this.status,
@@ -31,7 +31,7 @@ class ServiceRecordModel extends BaseModel {
   ServiceRecordModel.fromJson(Map<String, dynamic> json) {
     licensePlate = json['licensePlate'];
     location = json['location'];
-    personalNameSurname = json['personalNameSurname'];
+    Username = json['Username'];
     licensePlateImage = json['licensePlateImage'];
     id = json['id'];
     status = json['status'];
@@ -47,7 +47,7 @@ class ServiceRecordModel extends BaseModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['licensePlate'] = this.licensePlate;
     data['location'] = this.location;
-    data['personalNameSurname'] = this.personalNameSurname;
+    data['Username'] = this.Username;
     data['licensePlateImage'] = this.licensePlateImage;
     data['id'] = this.id;
     data['status'] = this.status;

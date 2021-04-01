@@ -89,7 +89,7 @@ abstract class _HomeViewModelBase with Store {
       ServiceRecordModel serviceRecordModel = ServiceRecordModel(
         licensePlateImage: _onlineScanResponseModel.data.licensePlateImage,
         location: "${locationModel.latitude},${locationModel.longitude}",
-        personalNameSurname: PreferencesManager.instance
+        Username: PreferencesManager.instance
             .getStringValue(PreferencesKeys.USER_NAME),
         licensePlate: _onlineScanResponseModel.data.licensePlate,
         id: 0,
