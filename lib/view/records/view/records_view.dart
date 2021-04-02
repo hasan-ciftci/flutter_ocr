@@ -8,6 +8,7 @@ import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/record_card.dart';
 import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
+import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -43,7 +44,9 @@ class _RecordsViewState extends State<RecordsView> {
       try {
         Dio dio = Dio();
 
+        Map<dynamic, dynamic> recordAndPlateMap = Map();
         List<FormData> bulkRecordFormData = plates.map((e) {
+          recordAndPlateMap.addAll({"plate-${e.timestamp}.jpg": "${e.id}"});
           return FormData.fromMap(
             {
               "Image": MultipartFile.fromBytes(base64Decode(e.base64Image),
@@ -63,14 +66,21 @@ class _RecordsViewState extends State<RecordsView> {
                     ApiConstants.BULK_SAVE_ENDPOINT,
                 data: element);
 
-            ///delete local item by Id.
+            int savedRecordId = int.parse(
+                recordAndPlateMap[element.files.first.value.filename]);
+            var x = await DatabaseService.instance.removeItem(savedRecordId);
+            print(x);
           } catch (e) {
+            print(e);
+            print("hata oldu");
+
             ///Skip local item.
+
           }
         });
       } catch (e) {
-        ///DioError [DioErrorType.RESPONSE]: Http status error [500]
         print(e);
+        print("hata oldu2");
       }
       return true;
     }

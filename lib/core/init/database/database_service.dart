@@ -77,6 +77,18 @@ class DatabaseService extends DatabaseProvider<RecordModel> {
     return recordsMap != null;
   }
 
+  Future<bool> removeItem(int id) async {
+    if (database != null) open();
+
+    final recordsMap = await database.delete(
+      _tableName,
+      where: '$columnId = ?',
+      whereArgs: [id],
+    );
+
+    return recordsMap != null;
+  }
+
   Future<void> createTable(Database db) async {
     await db.execute(
       '''CREATE TABLE IF NOT EXISTS $_tableName (
