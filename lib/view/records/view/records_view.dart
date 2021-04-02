@@ -1,10 +1,13 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/record_card.dart';
+import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
+import 'package:flutter_ocr/product/models/service_record_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +36,41 @@ class _RecordsViewState extends State<RecordsView> {
     });
   }
 
+  Future<bool> checkIfOfflineRecordsExists() async {
+    var plates = await recordsViewModel.getPlates();
+
+    try {
+      Dio dio = Dio();
+
+      List<ServiceRecordModel> serviceRecordModel = plates
+          .map(
+            (e) => ServiceRecordModel(
+              licensePlate: e.plate,
+              location: e.latitude.toString() + "," + e.longitude.toString(),
+              licensePlateImage: e.base64Image,
+              id: 0,
+              status: 1,
+              createdOn: "2021-04-01T22:09:08.033Z",
+              createdBy: 0,
+              modifiedOn: "2021-04-01T22:09:08.033Z",
+              modifiedBy: 0,
+              deletedOn: "2021-04-01T22:09:08.033Z",
+              deletedBy: 0,
+            ),
+          )
+          .toList();
+      var a = await dio.post(
+          ApiConstants.OCR_ENGINE_BASE_URL + ApiConstants.BULK_SAVE_ENDPOINT,
+          data: serviceRecordModel);
+    } catch (e) {}
+
+    if (plates != null) {
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     recordsViewModel.getContext(context);
@@ -40,12 +78,27 @@ class _RecordsViewState extends State<RecordsView> {
       backgroundColor: ColorConstants.ISPARK_WHITE,
       appBar: buildAppBar(),
       body: FutureBuilder(
-        future: buildListView(),
+        future: checkIfOfflineRecordsExists(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return snapshot.data;
+            return FutureBuilder(
+              future: buildListView(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return snapshot.data;
+                } else {
+                  return _buildProgressIndicator();
+                }
+              },
+            );
           } else {
-            return _buildProgressIndicator();
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Verileriniz eşitleniyor..."),
+                Center(child: _buildMockProgressIndicator()),
+              ],
+            );
           }
         },
       ),
@@ -148,6 +201,15 @@ class _RecordsViewState extends State<RecordsView> {
     );
   }
 
+  Widget _buildMockProgressIndicator() {
+    return new Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Center(
+        child: fetchingAnimation,
+      ),
+    );
+  }
+
   final fetchingAnimation = SpinKitChasingDots(
     size: 30,
     itemBuilder: (BuildContext context, int index) {
@@ -166,3 +228,33 @@ class _RecordsViewState extends State<RecordsView> {
     recordsViewModel.dispose();
   }
 }
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                              35HNM96
+
+
+
+
+
+
+
+
+
+
+
+
+                               */
