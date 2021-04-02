@@ -10,5 +10,6 @@ class ApiConstants {
   static const GET_RECORDS_ENDPOINT = 'api/v1/History/GetHistory';
   static const GET_IMAGE_ASYNC_ENDPOINT = 'api/v1/OCREngine/GetImageAsync';
   static const GET_IMAGE_ENDPOINT = 'api/v1/OCREngine/GetImage';
-  static const BULK_SAVE_ENDPOINT = 'api/v1/History/AddRangeHistory';
+  static const BULK_SAVE_ENDPOINT =
+      'api/v1/OCREngine/AddPlateCodeFromOfflineAsync';
 }

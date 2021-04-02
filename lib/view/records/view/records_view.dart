@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,6 @@ import 'package:flutter_ocr/core/components/record_card.dart';
 import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
-import 'package:flutter_ocr/product/models/service_record_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -38,36 +39,41 @@ class _RecordsViewState extends State<RecordsView> {
 
   Future<bool> checkIfOfflineRecordsExists() async {
     var plates = await recordsViewModel.getPlates();
-
-    try {
-      Dio dio = Dio();
-
-      List<ServiceRecordModel> serviceRecordModel = plates
-          .map(
-            (e) => ServiceRecordModel(
-              licensePlate: e.plate,
-              location: e.latitude.toString() + "," + e.longitude.toString(),
-              licensePlateImage: e.base64Image,
-              id: 0,
-              status: 1,
-              createdOn: "2021-04-01T22:09:08.033Z",
-              createdBy: 0,
-              modifiedOn: "2021-04-01T22:09:08.033Z",
-              modifiedBy: 0,
-              deletedOn: "2021-04-01T22:09:08.033Z",
-              deletedBy: 0,
-            ),
-          )
-          .toList();
-      var a = await dio.post(
-          ApiConstants.OCR_ENGINE_BASE_URL + ApiConstants.BULK_SAVE_ENDPOINT,
-          data: serviceRecordModel);
-    } catch (e) {}
-
     if (plates != null) {
+      try {
+        Dio dio = Dio();
+
+        List<FormData> bulkRecordFormData = plates.map((e) {
+          return FormData.fromMap(
+            {
+              "Image": MultipartFile.fromBytes(base64Decode(e.base64Image),
+                  filename: "plate-${e.timestamp}.jpg"),
+              "LicensePlate": e.plate,
+              "Username": e.username,
+            },
+          );
+        }).toList();
+
+        /// Request
+
+        bulkRecordFormData.forEach((element) async {
+          try {
+            await dio.post(
+                ApiConstants.OCR_ENGINE_BASE_URL +
+                    ApiConstants.BULK_SAVE_ENDPOINT,
+                data: element);
+
+            ///delete local item by Id.
+          } catch (e) {
+            ///Skip local item.
+          }
+        });
+      } catch (e) {
+        ///DioError [DioErrorType.RESPONSE]: Http status error [500]
+        print(e);
+      }
       return true;
     }
-
     return false;
   }
 
