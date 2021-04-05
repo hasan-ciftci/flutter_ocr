@@ -23,44 +23,47 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        double verticalPadding = constraints.maxHeight * .10;
-        double horizontalPadding = constraints.maxWidth * .04;
-        return Container(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: verticalPadding, horizontal: horizontalPadding),
-            child: Container(
-              decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                BoxShadow(
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                  offset: Offset(0.0, 0.0),
-                  color: Colors.black12,
-                ),
-              ]),
+    return Scaffold(
+        key: loginViewModel.scaffoldState,
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            double verticalPadding = constraints.maxHeight * .10;
+            double horizontalPadding = constraints.maxWidth * .04;
+            return Container(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: horizontalPadding, vertical: horizontalPadding),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    buildTopic(),
-                    buildLoginForm(),
-                    Observer(
-                      builder: (BuildContext context) {
-                        return buildLoginButton();
-                      },
+                    vertical: verticalPadding, horizontal: horizontalPadding),
+                child: Container(
+                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                    BoxShadow(
+                      blurRadius: 5,
+                      spreadRadius: 1,
+                      offset: Offset(0.0, 0.0),
+                      color: Colors.black12,
                     ),
-                  ],
+                  ]),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                        vertical: horizontalPadding),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        buildTopic(),
+                        buildLoginForm(),
+                        Observer(
+                          builder: (BuildContext context) {
+                            return buildLoginButton();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        );
-      },
-    ));
+            );
+          },
+        ));
   }
 
   Column buildLoginButton() {
