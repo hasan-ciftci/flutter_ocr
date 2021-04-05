@@ -213,6 +213,13 @@ abstract class _HomeViewModelBase with Store {
     selectedImage = null;
   }
 
+  applyRegexToScannedText() {
+    ///TODO:
+    ///CHANGE RIGHT HAND SIDE OF EQUALITY BELOW
+    ///AFTER REGEX IMPLEMENTATION
+    //_producedText = REGEX IMPLEMENTED TEXT;
+  }
+
   Future<void> scanImageOffline() async {
     if (selectedImage != null) {
       selectedImage = await FlutterNativeImage.compressImage(selectedImage.path,
@@ -221,6 +228,7 @@ abstract class _HomeViewModelBase with Store {
       _producedText =
           await OcrService.instance.getTextFromImageOffline(selectedImage);
       if (_producedText.isNotEmpty) {
+        applyRegexToScannedText();
         _updateScannedText(_producedText);
       } else {
         selectedImage = null;
