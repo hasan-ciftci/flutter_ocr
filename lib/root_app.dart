@@ -12,8 +12,9 @@ class FlutterOcr extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN) !=
-              null
+      home: PreferencesManager.instance
+              .getStringValue(PreferencesKeys.TOKEN)
+              .isNotEmpty
           ? HomeView()
           : LoginView(),
       navigatorKey: NavigationService.instance.navigatorKey,
