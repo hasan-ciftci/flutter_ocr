@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -20,6 +21,7 @@ import 'package:flutter_ocr/product/models/service_record_model.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_ocr/view/home/service/home_service.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +41,7 @@ abstract class _HomeViewModelBase with Store {
   @observable
   File selectedImage;
   String _selectedImageBase64;
+  Position myPosition;
   TextEditingController editingController;
   FocusNode focusNode;
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
@@ -63,6 +66,8 @@ abstract class _HomeViewModelBase with Store {
         ResolutionPreset.high);
     initializeControllerFuture = controller.initialize();
     _homeService = HomeService();
+    myPosition = LocationService.position;
+    renewPositionIn30Seconds();
   }
 
   @action
@@ -70,9 +75,6 @@ abstract class _HomeViewModelBase with Store {
     ConnectivityResult result =
         myContext.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
-      //Scan Image with API
-      //TODO:IMPLEMENT API CONNECTION
-
       await scanImageOnline();
     } else {
       await scanImageOffline();
@@ -88,8 +90,6 @@ abstract class _HomeViewModelBase with Store {
     ConnectivityResult result =
         myContext.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
-      //Scan Image with API
-      //TODO:IMPLEMENT API CONNECTION
       saveLicensePlateOnline();
     } else {
       await saveLicensePlateOffline();
@@ -211,8 +211,11 @@ abstract class _HomeViewModelBase with Store {
     List<String> plateParts = _producedText.split(" ");
     for (int i = 0; i < plateParts.length; i++) {
       if ((i - 1 >= 0) && ((plateParts.length - 1) >= (i + 1))) {
-        if (numberExp.hasMatch(plateParts[i - 1]) && upperCaseExp.hasMatch(plateParts[i]) && numberExp.hasMatch(plateParts[i + 1])) {
-          _producedText=plateParts[i-1]+" "+plateParts[i]+" "+plateParts[i+1];
+        if (numberExp.hasMatch(plateParts[i - 1]) &&
+            upperCaseExp.hasMatch(plateParts[i]) &&
+            numberExp.hasMatch(plateParts[i + 1])) {
+          _producedText =
+              plateParts[i - 1] + " " + plateParts[i] + " " + plateParts[i + 1];
           break;
         }
       }
@@ -277,7 +280,7 @@ abstract class _HomeViewModelBase with Store {
 
   Future _getPosition() async {
     try {
-      final position = await LocationService.instance.determinePosition();
+      final position = myPosition;
       if (position != null) {
         locationModel = LocationModel(
             latitude: position.latitude,
@@ -315,5 +318,12 @@ abstract class _HomeViewModelBase with Store {
         content: Text(message),
       ),
     );
+  }
+
+  void renewPositionIn30Seconds() {
+    Timer.periodic(
+        Duration(seconds: 30),
+        (Timer t) async =>
+            myPosition = await LocationService.instance.determinePosition());
   }
 }
