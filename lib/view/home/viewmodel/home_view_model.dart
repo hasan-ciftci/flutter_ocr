@@ -3,16 +3,15 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/enums.dart';
 import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
-import 'package:flutter_ocr/core/init/network/network_manager.dart';
 import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
@@ -20,6 +19,7 @@ import 'package:flutter_ocr/product/models/response/scan_response_model.dart';
 import 'package:flutter_ocr/product/models/service_record_model.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
+import 'package:flutter_ocr/view/home/service/home_service.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +44,7 @@ abstract class _HomeViewModelBase with Store {
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
 
   DatabaseService recordDataBaseProvider;
+  HomeService _homeService;
 
   CameraController controller;
   Future<void> initializeControllerFuture;
@@ -61,6 +62,7 @@ abstract class _HomeViewModelBase with Store {
             sensorOrientation: 90),
         ResolutionPreset.high);
     initializeControllerFuture = controller.initialize();
+    _homeService = HomeService();
   }
 
   @action
@@ -108,18 +110,9 @@ abstract class _HomeViewModelBase with Store {
         createdOn: DateTime.now().toIso8601String(),
         createdBy: 0,
       );
-      var recordHistoryResponse = await NetworkManager.instance
-          .dioPost<ServiceRecordModel>(
-              baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
-              endPoint: ApiConstants.ADD_RECORD_ENDPOINT,
-              model: serviceRecordModel);
+
+      await _homeService.saveLicensePlateOnline(serviceRecordModel);
       showSnackBar(status: SnackBarStatus.SUCCESS, message: "Kaydedildi");
-      /*
-    Control data.
-    RecordHistoryModel recordHistoryModel =
-        RecordHistoryModel.fromJson(recordHistoryResponse);
-    print(recordHistoryModel.toJson());
-    */
     } catch (e) {
       showSnackBar(status: SnackBarStatus.FAIL, message: "Server hatası");
     }
@@ -129,7 +122,6 @@ abstract class _HomeViewModelBase with Store {
   }
 
   Future<void> saveLicensePlateOffline() async {
-    //TODO: IMPLEMENT SAVING OPERATIONS FOR API
     _changeLoadingStatus();
     await recordDataBaseProvider.insertRecord(
       RecordModel(
@@ -239,6 +231,15 @@ abstract class _HomeViewModelBase with Store {
     }
   }
 
+  Future<ScanResponseModel> getTextFromImageOnline(File imageFile) async {
+    FormData formData = FormData.fromMap(
+        {'Image': await MultipartFile.fromFile(imageFile.path)});
+    var scanResponse = await _homeService.scanTextOnline(formData);
+    ScanResponseModel scanResponseModel =
+        ScanResponseModel.fromJson(scanResponse);
+    return scanResponseModel;
+  }
+
   Future<void> scanImageOnline() async {
     _changeScanningStatus();
     try {
@@ -248,8 +249,7 @@ abstract class _HomeViewModelBase with Store {
             quality: 20);
 
         await _getPosition();
-        _onlineScanResponseModel =
-            await OcrService.instance.getTextFromImageOnline(selectedImage);
+        _onlineScanResponseModel = await getTextFromImageOnline(selectedImage);
         if (_onlineScanResponseModel.data.licensePlate.isNotEmpty) {
           _producedText = _onlineScanResponseModel.data.licensePlate;
           _updateScannedText(_producedText);
