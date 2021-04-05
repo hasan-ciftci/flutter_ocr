@@ -292,7 +292,11 @@ abstract class _HomeViewModelBase with Store {
             selectedImage.path,
             quality: 20);
 
-        await _getPosition();
+        try {
+          await _getPosition();
+        } catch (e) {
+          print(e);
+        }
         _onlineScanResponseModel = await getTextFromImageOnline(selectedImage);
         if (_onlineScanResponseModel.data.licensePlate.isNotEmpty) {
           _producedText = _onlineScanResponseModel.data.licensePlate;
@@ -305,7 +309,14 @@ abstract class _HomeViewModelBase with Store {
       }
     } catch (e) {
       print(e);
-      showSnackBar(status: SnackBarStatus.FAIL, message: "Servis hatası");
+      if (e
+          .toString()
+          .contains("The getter 'licensePlate' was called on null.")) {
+        showSnackBar(
+            status: SnackBarStatus.FAIL, message: "Plaka tanımlanamadı");
+      } else {
+        showSnackBar(status: SnackBarStatus.FAIL, message: "Servis hatası");
+      }
 
       prepareToNewFile();
     }
@@ -313,8 +324,21 @@ abstract class _HomeViewModelBase with Store {
   }
 
   Future _getPosition() async {
+    var position;
     try {
-      final position = myPosition;
+      if (myPosition != null) {
+        position = myPosition;
+      } else {
+        try {
+          await LocationService.instance.determinePosition();
+        } catch (e) {
+          print(e);
+          showSnackBar(
+              status: SnackBarStatus.FAIL,
+              message: "Konum servisine ulaşılamıyor");
+        }
+      }
+
       if (position != null) {
         locationModel = LocationModel(
             latitude: position.latitude,

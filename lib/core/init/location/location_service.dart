@@ -13,7 +13,11 @@ class LocationService {
   LocationService._init();
 
   static Future firstLocationInit() async {
-    position ??= await instance.determinePosition();
+    try {
+      position ??= await instance.determinePosition();
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<Position> determinePosition() async {

@@ -27,7 +27,9 @@ class LoginService implements ILoginService {
 
       NavigationService.instance
           .navigateToPageClear(path: NavigationConstants.HOME_VIEW);
+      return true;
     }
+    return false;
 
     //TODO: CREATE MOCK DATA FOR SAVING PLATE PROCESS
     PreferencesManager.instance
