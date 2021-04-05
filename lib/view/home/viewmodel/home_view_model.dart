@@ -73,9 +73,7 @@ abstract class _HomeViewModelBase with Store {
   @action
   Future<void> scanImage() async {
     ConnectivityResult result =
-        myContext
-            .read<ConnectionNotifier>()
-            .connectivityResult;
+        myContext.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
       await scanImageOnline();
     } else {
@@ -90,9 +88,7 @@ abstract class _HomeViewModelBase with Store {
 
   Future<void> saveLicensePlate() async {
     ConnectivityResult result =
-        myContext
-            .read<ConnectionNotifier>()
-            .connectivityResult;
+        myContext.read<ConnectionNotifier>().connectivityResult;
     if (result != ConnectivityResult.none) {
       saveLicensePlateOnline();
     } else {
@@ -234,7 +230,7 @@ abstract class _HomeViewModelBase with Store {
           quality: 20);
       _changeScanningStatus();
       _producedText =
-      await OcrService.instance.getTextFromImageOffline(selectedImage);
+          await OcrService.instance.getTextFromImageOffline(selectedImage);
       if (_producedText.isNotEmpty) {
         applyRegexToScannedText();
         _updateScannedText(_producedText);
@@ -252,7 +248,7 @@ abstract class _HomeViewModelBase with Store {
         {'Image': await MultipartFile.fromFile(imageFile.path)});
     var scanResponse = await _homeService.scanTextOnline(formData);
     ScanResponseModel scanResponseModel =
-    ScanResponseModel.fromJson(scanResponse);
+        ScanResponseModel.fromJson(scanResponse);
     return scanResponseModel;
   }
 
@@ -286,7 +282,8 @@ abstract class _HomeViewModelBase with Store {
 
   Future _getPosition() async {
     try {
-      final position = myPosition;
+      final position =
+          myPosition ?? await LocationService.instance.determinePosition();
       if (position != null) {
         locationModel = LocationModel(
             latitude: position.latitude,
@@ -320,7 +317,7 @@ abstract class _HomeViewModelBase with Store {
         elevation: 10,
         duration: Duration(milliseconds: 1500),
         backgroundColor:
-        status == SnackBarStatus.SUCCESS ? Colors.green : Colors.red,
+            status == SnackBarStatus.SUCCESS ? Colors.green : Colors.red,
         content: Text(message),
       ),
     );
