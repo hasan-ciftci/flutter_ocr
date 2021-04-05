@@ -213,6 +213,7 @@ abstract class _HomeViewModelBase with Store {
       if ((i - 1 >= 0) && ((plateParts.length - 1) >= (i + 1))) {
         if (numberExp.hasMatch(plateParts[i - 1]) && upperCaseExp.hasMatch(plateParts[i]) && numberExp.hasMatch(plateParts[i + 1])) {
           _producedText=plateParts[i-1]+" "+plateParts[i]+" "+plateParts[i+1];
+          break;
         }
       }
     }
