@@ -13,18 +13,19 @@ class NetworkManager {
   Dio _dio;
 
   NetworkManager._internal() {
-    BaseOptions baseOptions = BaseOptions(headers: {
-      "Authorization": "Bearer " +
-          PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN)
-    });
-    _dio = Dio(baseOptions);
+    _dio = Dio();
   }
 
   Future dioPost<T extends BaseModel>(
       {@required String baseURL,
       @required String endPoint,
       @required T model}) async {
-    final response = await _dio.post(baseURL + endPoint, data: model.toJson());
+    final response = await _dio.post(baseURL + endPoint,
+        data: model.toJson(),
+        options: Options(headers: {
+          "Authorization": "Bearer " +
+              PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN)
+        }));
     switch (response.statusCode) {
       case HttpStatus.ok:
         final responseBody = response.data;
@@ -37,10 +38,12 @@ class NetworkManager {
       {@required String baseURL,
       @required String endPoint,
       @required T model}) async {
-    final response = await _dio.get(
-      baseURL + endPoint,
-      queryParameters: model.toJson(),
-    );
+    final response = await _dio.get(baseURL + endPoint,
+        queryParameters: model.toJson(),
+        options: Options(headers: {
+          "Authorization": "Bearer " +
+              PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN)
+        }));
     switch (response.statusCode) {
       case HttpStatus.ok:
         final responseBody = response.data;
@@ -53,10 +56,12 @@ class NetworkManager {
       {@required String baseURL,
       @required String endPoint,
       @required T file}) async {
-    final response = await _dio.post(
-      baseURL + endPoint,
-      data: file,
-    );
+    final response = await _dio.post(baseURL + endPoint,
+        data: file,
+        options: Options(headers: {
+          "Authorization": "Bearer " +
+              PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN)
+        }));
     switch (response.statusCode) {
       case HttpStatus.ok:
         final responseBody = response.data;
