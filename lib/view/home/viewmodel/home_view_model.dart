@@ -206,10 +206,16 @@ abstract class _HomeViewModelBase with Store {
   }
 
   applyRegexToScannedText() {
-    ///TODO:
-    ///CHANGE RIGHT HAND SIDE OF EQUALITY BELOW
-    ///AFTER REGEX IMPLEMENTATION
-    //_producedText = REGEX IMPLEMENTED TEXT;
+    RegExp upperCaseExp = RegExp(r"^[A-Z]+$");
+    RegExp numberExp = RegExp(r"^[0-9]+$");
+    List<String> plateParts = _producedText.split(" ");
+    for (int i = 0; i < plateParts.length; i++) {
+      if ((i - 1 >= 0) && ((plateParts.length - 1) >= (i + 1))) {
+        if (numberExp.hasMatch(plateParts[i - 1]) && upperCaseExp.hasMatch(plateParts[i]) && numberExp.hasMatch(plateParts[i + 1])) {
+          _producedText=plateParts[i-1]+" "+plateParts[i]+" "+plateParts[i+1];
+        }
+      }
+    }
   }
 
   Future<void> scanImageOffline() async {
