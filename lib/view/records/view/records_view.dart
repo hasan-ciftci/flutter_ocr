@@ -9,6 +9,7 @@ import 'package:flutter_ocr/core/components/record_card.dart';
 import 'package:flutter_ocr/core/constants/api_constants.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
+import 'package:flutter_ocr/core/init/network/network_manager.dart';
 import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -29,62 +30,82 @@ class _RecordsViewState extends State<RecordsView> {
     super.initState();
     recordsViewModel = RecordsViewModel();
     recordsViewModel.init();
-    recordsViewModel.getMoreData();
-    recordsViewModel.scrollController.addListener(() {
-      if (recordsViewModel.scrollController.position.pixels ==
-          recordsViewModel.scrollController.position.maxScrollExtent) {
-        recordsViewModel.getMoreData();
+    getFirstDataOnline();
+  }
+
+  getFirstDataOnline() {
+    ConnectivityResult result =
+        context.read<ConnectionNotifier>().connectivityResult;
+    if (result == ConnectivityResult.none) {
+    } else {
+      recordsViewModel.getMoreData();
+      recordsViewModel.scrollController.addListener(() {
+        if (recordsViewModel.scrollController.position.pixels ==
+            recordsViewModel.scrollController.position.maxScrollExtent) {
+          recordsViewModel.getMoreData();
+        }
+      });
+    }
+  }
+
+  transformOfflineRecordsToFormDataList(
+      List<RecordModel> plates, Map<dynamic, dynamic> recordAndPlateMap) {
+    List<FormData> bulkRecordFormData = plates.map((e) {
+      recordAndPlateMap.addAll({"plate-${e.timestamp}.jpg": "${e.id}"});
+      return FormData.fromMap(
+        {
+          "Image": MultipartFile.fromBytes(base64Decode(e.base64Image),
+              filename: "plate-${e.timestamp}.jpg"),
+          "LicensePlate": e.plate,
+          "Username": e.username,
+        },
+      );
+    }).toList();
+    return bulkRecordFormData;
+  }
+
+  deleteTransferredOfflineRecords(List<FormData> bulkRecordFormData,
+      Map<dynamic, dynamic> recordAndPlateMap) {
+    bulkRecordFormData.forEach((element) async {
+      try {
+        NetworkManager.instance.dioPostForm(
+            baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
+            endPoint: ApiConstants.BULK_SAVE_ENDPOINT,
+            file: element);
+
+        int savedRecordId =
+            int.parse(recordAndPlateMap[element.files.first.value.filename]);
+        await DatabaseService.instance.removeItem(savedRecordId);
+      } catch (e) {
+        print(e);
+
+        ///Skip deleting local item due to an error.
       }
     });
   }
 
   Future<bool> checkIfOfflineRecordsExists() async {
-    var plates = await recordsViewModel.getPlates();
-    if (plates != null) {
-      try {
-        Dio dio = Dio();
+    ConnectivityResult result =
+        context.read<ConnectionNotifier>().connectivityResult;
+    if (result == ConnectivityResult.none) {
+      return false;
+    } else {
+      var plates = await recordsViewModel.getPlates();
+      if (plates != null) {
+        try {
+          Map<dynamic, dynamic> recordAndPlateMap = Map();
+          List<FormData> bulkRecordFormData =
+              transformOfflineRecordsToFormDataList(plates, recordAndPlateMap);
 
-        Map<dynamic, dynamic> recordAndPlateMap = Map();
-        List<FormData> bulkRecordFormData = plates.map((e) {
-          recordAndPlateMap.addAll({"plate-${e.timestamp}.jpg": "${e.id}"});
-          return FormData.fromMap(
-            {
-              "Image": MultipartFile.fromBytes(base64Decode(e.base64Image),
-                  filename: "plate-${e.timestamp}.jpg"),
-              "LicensePlate": e.plate,
-              "Username": e.username,
-            },
-          );
-        }).toList();
-
-        /// Request
-
-        bulkRecordFormData.forEach((element) async {
-          try {
-            await dio.post(
-                ApiConstants.OCR_ENGINE_BASE_URL +
-                    ApiConstants.BULK_SAVE_ENDPOINT,
-                data: element);
-
-            int savedRecordId = int.parse(
-                recordAndPlateMap[element.files.first.value.filename]);
-            var x = await DatabaseService.instance.removeItem(savedRecordId);
-            print(x);
-          } catch (e) {
-            print(e);
-            print("hata oldu");
-
-            ///Skip local item.
-
-          }
-        });
-      } catch (e) {
-        print(e);
-        print("hata oldu2");
+          deleteTransferredOfflineRecords(
+              bulkRecordFormData, recordAndPlateMap);
+        } catch (e) {
+          print(e);
+        }
+        return true;
       }
-      return true;
+      return false;
     }
-    return false;
   }
 
   @override

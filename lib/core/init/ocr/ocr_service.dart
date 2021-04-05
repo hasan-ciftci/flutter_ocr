@@ -32,7 +32,7 @@ class OcrService {
     FormData formData = FormData.fromMap(
         {'Image': await MultipartFile.fromFile(imageFile.path)});
 
-    var scanResponse = await NetworkManager.instance.dioPostImage(
+    var scanResponse = await NetworkManager.instance.dioPostForm(
       endPoint: ApiConstants.SCAN_ENDPOINT,
       baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
       file: formData,
