@@ -92,45 +92,47 @@ class _RecordsViewState extends State<RecordsView> {
   }
 
   Widget buildOnlineListView() {
-    if (recordsViewModel.users.length != 0) {
-      return ListView.builder(
-        itemCount: recordsViewModel.users.length + 1,
-        padding: EdgeInsets.symmetric(vertical: 8.0),
-        itemBuilder: (BuildContext context, int index) {
-          if (index == recordsViewModel.users.length) {
-            return Observer(
-              builder: (BuildContext context) {
-                return _buildProgressIndicator();
-              },
-            );
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: buildOnlineRecordCard(index),
-            );
-          }
-        },
-        controller: recordsViewModel.scrollController,
-      );
-    } else {
-      return Center(
-        child: Text("Henüz hiç kayıt oluşturulmadı."),
-      );
-    }
+    return recordsViewModel.users.length != 0
+        ? ListView.builder(
+            itemCount: recordsViewModel.users.length + 1,
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            itemBuilder: (BuildContext context, int index) {
+              if (index == recordsViewModel.users.length) {
+                return Observer(
+                  builder: (BuildContext context) {
+                    return _buildProgressIndicator();
+                  },
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: buildOnlineRecordCard(index),
+                );
+              }
+            },
+            controller: recordsViewModel.scrollController,
+          )
+        : Center(
+            child: Text("Henüz hiç kayıt oluşturulmadı."),
+          );
   }
 
-  ListView buildRecordListOffline(AsyncSnapshot<List<RecordModel>> snapshot) {
-    return ListView.builder(
-      padding: EdgeInsets.all(8.0),
-      itemCount: snapshot.data?.length ?? 0,
-      itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: buildOfflineRecordCard(
-              snapshot, snapshot.data.length - index - 1),
-        );
-      },
-    );
+  Widget buildRecordListOffline(AsyncSnapshot<List<RecordModel>> snapshot) {
+    return snapshot.data?.length != 0
+        ? ListView.builder(
+            padding: EdgeInsets.all(8.0),
+            itemCount: snapshot.data?.length ?? 0,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: buildOfflineRecordCard(
+                    snapshot, snapshot.data.length - index - 1),
+              );
+            },
+          )
+        : Center(
+            child: Text("Henüz hiç kayıt oluşturulmadı."),
+          );
   }
 
   RecordCard buildOnlineRecordCard(int index) {
