@@ -214,7 +214,6 @@ abstract class _HomeViewModelBase with Store {
     RegExp numberExp = RegExp(r"^[0-9]+$");
     RegExp escapedCharacter = RegExp(r"[\n]");
     _producedText = _producedText.replaceAll(escapedCharacter, " ");
-
     List<String> plateParts = _producedText.split(" ");
     for (int i = 0; i < plateParts.length; i++) {
       if ((i - 1 >= 0) && ((plateParts.length - 1) >= (i + 1))) {
