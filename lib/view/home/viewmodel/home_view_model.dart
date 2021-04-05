@@ -68,7 +68,9 @@ abstract class _HomeViewModelBase with Store {
   @action
   Future<void> scanImage() async {
     ConnectivityResult result =
-        myContext.read<ConnectionNotifier>().connectivityResult;
+        myContext
+            .read<ConnectionNotifier>()
+            .connectivityResult;
     if (result != ConnectivityResult.none) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
@@ -86,7 +88,9 @@ abstract class _HomeViewModelBase with Store {
 
   Future<void> saveLicensePlate() async {
     ConnectivityResult result =
-        myContext.read<ConnectionNotifier>().connectivityResult;
+        myContext
+            .read<ConnectionNotifier>()
+            .connectivityResult;
     if (result != ConnectivityResult.none) {
       //Scan Image with API
       //TODO:IMPLEMENT API CONNECTION
@@ -208,11 +212,17 @@ abstract class _HomeViewModelBase with Store {
   applyRegexToScannedText() {
     RegExp upperCaseExp = RegExp(r"^[A-Z]+$");
     RegExp numberExp = RegExp(r"^[0-9]+$");
+    RegExp escapedCharacter = RegExp(r"[\n]");
+    _producedText = _producedText.replaceAll(escapedCharacter, " ");
+
     List<String> plateParts = _producedText.split(" ");
     for (int i = 0; i < plateParts.length; i++) {
       if ((i - 1 >= 0) && ((plateParts.length - 1) >= (i + 1))) {
-        if (numberExp.hasMatch(plateParts[i - 1]) && upperCaseExp.hasMatch(plateParts[i]) && numberExp.hasMatch(plateParts[i + 1])) {
-          _producedText=plateParts[i-1]+" "+plateParts[i]+" "+plateParts[i+1];
+        if (numberExp.hasMatch(plateParts[i - 1]) &&
+            upperCaseExp.hasMatch(plateParts[i]) &&
+            numberExp.hasMatch(plateParts[i + 1])) {
+          _producedText =
+              plateParts[i - 1] + " " + plateParts[i] + " " + plateParts[i + 1];
           break;
         }
       }
@@ -225,7 +235,7 @@ abstract class _HomeViewModelBase with Store {
           quality: 20);
       _changeScanningStatus();
       _producedText =
-          await OcrService.instance.getTextFromImageOffline(selectedImage);
+      await OcrService.instance.getTextFromImageOffline(selectedImage);
       if (_producedText.isNotEmpty) {
         applyRegexToScannedText();
         _updateScannedText(_producedText);
@@ -243,7 +253,7 @@ abstract class _HomeViewModelBase with Store {
         {'Image': await MultipartFile.fromFile(imageFile.path)});
     var scanResponse = await _homeService.scanTextOnline(formData);
     ScanResponseModel scanResponseModel =
-        ScanResponseModel.fromJson(scanResponse);
+    ScanResponseModel.fromJson(scanResponse);
     return scanResponseModel;
   }
 
@@ -311,7 +321,7 @@ abstract class _HomeViewModelBase with Store {
         elevation: 10,
         duration: Duration(milliseconds: 1500),
         backgroundColor:
-            status == SnackBarStatus.SUCCESS ? Colors.green : Colors.red,
+        status == SnackBarStatus.SUCCESS ? Colors.green : Colors.red,
         content: Text(message),
       ),
     );
