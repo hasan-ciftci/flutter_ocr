@@ -80,17 +80,21 @@ abstract class _RecordsViewModelBase with Store {
   }
 
   Future<void> getFirstDataOnline() async {
-    ConnectivityResult result =
-        Provider.of<ConnectionNotifier>(myContext, listen: false)
-            .connectivityResult;
-    if (result != ConnectivityResult.none) {
-      await getMoreData();
-      scrollController.addListener(() async {
-        if (scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) {
-          await getMoreData();
-        }
-      });
+    try {
+      ConnectivityResult result =
+          Provider.of<ConnectionNotifier>(myContext, listen: false)
+              .connectivityResult;
+      if (result != ConnectivityResult.none) {
+        await getMoreData();
+        scrollController.addListener(() async {
+          if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent) {
+            await getMoreData();
+          }
+        });
+      }
+    } catch (e) {
+      print(e);
     }
   }
 

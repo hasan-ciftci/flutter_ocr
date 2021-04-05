@@ -24,20 +24,22 @@ class LoginService implements ILoginService {
     if (loginResponseModel.data?.accessToken != null) {
       final token = loginResponseModel.data.accessToken;
       await saveTokenToPreferences(token);
+      await saveUsernameToPreferences(model.username);
 
       NavigationService.instance
           .navigateToPageClear(path: NavigationConstants.HOME_VIEW);
       return true;
     }
     return false;
-
-    //TODO: CREATE MOCK DATA FOR SAVING PLATE PROCESS
-    PreferencesManager.instance
-        .setStringValue(PreferencesKeys.USER_NAME, model.username);
   }
 
   saveTokenToPreferences(String token) async {
     await PreferencesManager.instance
         .setStringValue(PreferencesKeys.TOKEN, token);
+  }
+
+  saveUsernameToPreferences(String username) {
+    PreferencesManager.instance
+        .setStringValue(PreferencesKeys.USER_NAME, username);
   }
 }
