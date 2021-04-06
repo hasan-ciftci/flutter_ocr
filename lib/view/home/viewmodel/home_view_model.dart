@@ -207,49 +207,13 @@ abstract class _HomeViewModelBase with Store {
 
   applyRegexToScannedText() {
     try {
-      RegExp plateExp = RegExp(r"[0-9]+[A-Z]+[0-9]+");
-      var match = plateExp.firstMatch(_producedText);
+      String oneLinePlate = _producedText.replaceAll("\n", " ");
+      oneLinePlate = _producedText.replaceAll(RegExp(r"\s{2,}"), "");
+      RegExp plateExp = RegExp(
+          r"((\d{2}\s[A-Z]{1,6}\s[0-9]{1,6})|(\d{2}\s[A-Z]{1,6}[0-9]{1,6})|(\d{2}[A-Z]{1,6}\s[0-9]{1,6})|(\d{2}[A-Z]{1,6}[0-9]{1,6}))");
+      var match = plateExp.firstMatch(oneLinePlate);
       if (match != null) {
         _producedText = match[0];
-      } else {
-        RegExp plateWithFirstWhiteSpace = RegExp(r"[0-9]+\s[A-Z]+[0-9]+");
-        var match = plateWithFirstWhiteSpace.firstMatch(_producedText);
-        if (match != null) {
-          _producedText = match[0];
-        } else {
-          RegExp plateWithFullWhiteSpace = RegExp(r"[0-9]+\s[A-Z]+[0-9]+");
-          var match = plateWithFullWhiteSpace.firstMatch(_producedText);
-          if (match != null) {
-            _producedText = match[0];
-          } else {
-            RegExp plateWithLastWhiteSpace = RegExp(r"[0-9]+[A-Z]+\s[0-9]+");
-            var match = plateWithLastWhiteSpace.firstMatch(_producedText);
-            if (match != null) {
-              _producedText = match[0];
-            } else {
-              RegExp upperCaseExp = RegExp(r"^[A-Z]+$");
-              RegExp numberExp = RegExp(r"^[0-9]+$");
-              RegExp escapedCharacter = RegExp(r"[\n]");
-              String oneLineText =
-                  _producedText.replaceAll(escapedCharacter, " ");
-              List<String> plateParts = oneLineText.split(" ");
-              for (int i = 0; i < plateParts.length; i++) {
-                if ((i - 1 >= 0) && ((plateParts.length - 1) >= (i + 1))) {
-                  if (numberExp.hasMatch(plateParts[i - 1]) &&
-                      upperCaseExp.hasMatch(plateParts[i]) &&
-                      numberExp.hasMatch(plateParts[i + 1])) {
-                    _producedText = plateParts[i - 1] +
-                        " " +
-                        plateParts[i] +
-                        " " +
-                        plateParts[i + 1];
-                    break;
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     } catch (e) {
       print(e.toSring());

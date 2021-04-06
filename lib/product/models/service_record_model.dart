@@ -30,7 +30,8 @@ class ServiceRecordModel extends BaseModel {
 
   ServiceRecordModel.fromJson(Map<String, dynamic> json) {
     licensePlate = json['licensePlate'];
-    location = json['location'];
+    location =
+        json['location'].toString().contains("null") ? null : json['location'];
     Username = json['Username'];
     licensePlateImage = json['licensePlateImage'];
     id = json['id'];
