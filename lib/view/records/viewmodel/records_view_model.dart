@@ -70,9 +70,9 @@ abstract class _RecordsViewModelBase with Store {
       ..clear()
       ..addAll(recordData);
 
-    updateRecordNotifier(recordData);
-
     completeFetchingData();
+
+    updateRecordNotifier(users);
   }
 
   updateRecordNotifier(List recordData) {

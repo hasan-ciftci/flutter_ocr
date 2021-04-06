@@ -29,7 +29,9 @@ class RecordNotifier extends ChangeNotifier {
   int _index;
 
   addRecord(List<dynamic> recordList) {
-    _recordList.addAll(recordList);
+    _recordList
+      ..clear()
+      ..addAll(recordList);
   }
 
   ServiceRecordModel getRecord(int index) {
