@@ -29,7 +29,7 @@ abstract class _SingleRecordViewModelBase with Store {
   getCameraPosition(double latitude, double longitude) {
     return markedPosition = CameraPosition(
       target: LatLng(latitude, longitude),
-      zoom: 14.4746,
+      zoom: 10.0,
     );
   }
 
