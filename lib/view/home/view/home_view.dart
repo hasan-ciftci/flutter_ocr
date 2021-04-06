@@ -51,6 +51,13 @@ class _HomeViewState extends State<HomeView>
     viewModel.init();
   }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _connectivity.disposeStream();
+    super.dispose();
+  }
+
   void animateScanAnimation(bool reverse) {
     if (reverse) {
       _animationController.reverse(from: 1.0);
