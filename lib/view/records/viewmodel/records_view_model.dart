@@ -121,14 +121,12 @@ abstract class _RecordsViewModelBase with Store {
 
   deleteTransferredOfflineRecords(List<FormData> bulkRecordFormData,
       Map<dynamic, dynamic> recordAndPlateMap) async {
-    bulkRecordFormData.forEach((element) async {
+    for (var element in bulkRecordFormData) {
       try {
-        await NetworkManager.instance
-            .dioPostForm(
-                baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
-                endPoint: ApiConstants.BULK_SAVE_ENDPOINT,
-                file: element)
-            .then((_) {});
+        await NetworkManager.instance.dioPostForm(
+            baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
+            endPoint: ApiConstants.BULK_SAVE_ENDPOINT,
+            file: element);
 
         int savedRecordId =
             int.parse(recordAndPlateMap[element.files.first.value.filename]);
@@ -138,7 +136,7 @@ abstract class _RecordsViewModelBase with Store {
 
         ///Skip deleting local item due to an error.
       }
-    });
+    }
   }
 
   Future<bool> checkIfOfflineRecordsExists() async {
