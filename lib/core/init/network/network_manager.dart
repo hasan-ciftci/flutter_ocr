@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/base/base_model.dart';
 import 'package:flutter_ocr/core/constants/enums.dart';
+import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
+import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 
 class NetworkManager {
@@ -26,6 +28,7 @@ class NetworkManager {
           "Authorization": "Bearer " +
               PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN)
         }));
+    checkAuthenticationEnded(response);
     switch (response.statusCode) {
       case HttpStatus.ok:
         final responseBody = response.data;
@@ -44,6 +47,7 @@ class NetworkManager {
           "Authorization": "Bearer " +
               PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN)
         }));
+    checkAuthenticationEnded(response);
     switch (response.statusCode) {
       case HttpStatus.ok:
         final responseBody = response.data;
@@ -62,11 +66,20 @@ class NetworkManager {
           "Authorization": "Bearer " +
               PreferencesManager.instance.getStringValue(PreferencesKeys.TOKEN)
         }));
+    checkAuthenticationEnded(response);
     switch (response.statusCode) {
       case HttpStatus.ok:
         final responseBody = response.data;
         return responseBody;
       default:
+    }
+  }
+
+  checkAuthenticationEnded(Response<dynamic> response) {
+    if (response.data.toString().contains("401")) {
+      NavigationService.instance
+          .navigateToPageClear(path: NavigationConstants.LOGIN_VIEW);
+      PreferencesManager.instance.clearAll();
     }
   }
 }
