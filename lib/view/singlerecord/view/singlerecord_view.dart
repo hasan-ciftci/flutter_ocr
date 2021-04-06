@@ -356,12 +356,12 @@ class _SingleRecordViewState extends State<SingleRecordView> {
           Marker(
               markerId: MarkerId('currentPosition'),
               position:
-                  LatLng(double.parse(latLong[0]), double.parse(latLong[0])),
+                  LatLng(double.parse(latLong[0]), double.parse(latLong[1])),
               infoWindow: InfoWindow(title: 'The title of the marker'))
         ]),
         mapType: MapType.normal,
         initialCameraPosition: singleRecordViewModel.getCameraPosition(
-            double.parse(latLong[0]), double.parse(latLong[0])),
+            double.parse(latLong[0]), double.parse(latLong[1])),
         onMapCreated: (GoogleMapController controller) {
           singleRecordViewModel.controller.complete(controller);
         },
