@@ -61,6 +61,11 @@ abstract class _RecordsViewModelBase with Store {
     final fetchedNewRecords = await _recordsService.fetchRecords(
         quantityOfData: 10, paginationPage: page);
     List recordData = fetchedNewRecords['data'];
+    print(
+        "recordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordData");
+    print(recordData);
+    print(
+        "recordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordData");
     newData
       ..clear()
       ..addAll(recordData);
@@ -115,13 +120,15 @@ abstract class _RecordsViewModelBase with Store {
   }
 
   deleteTransferredOfflineRecords(List<FormData> bulkRecordFormData,
-      Map<dynamic, dynamic> recordAndPlateMap) {
+      Map<dynamic, dynamic> recordAndPlateMap) async {
     bulkRecordFormData.forEach((element) async {
       try {
-        NetworkManager.instance.dioPostForm(
-            baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
-            endPoint: ApiConstants.BULK_SAVE_ENDPOINT,
-            file: element);
+        await NetworkManager.instance
+            .dioPostForm(
+                baseURL: ApiConstants.OCR_ENGINE_BASE_URL,
+                endPoint: ApiConstants.BULK_SAVE_ENDPOINT,
+                file: element)
+            .then((_) {});
 
         int savedRecordId =
             int.parse(recordAndPlateMap[element.files.first.value.filename]);
@@ -147,7 +154,7 @@ abstract class _RecordsViewModelBase with Store {
           List<FormData> bulkRecordFormData =
               transformOfflineRecordsToFormDataList(plates, recordAndPlateMap);
 
-          deleteTransferredOfflineRecords(
+          await deleteTransferredOfflineRecords(
               bulkRecordFormData, recordAndPlateMap);
         } catch (e) {
           print(e);
