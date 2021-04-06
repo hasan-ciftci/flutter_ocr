@@ -89,27 +89,7 @@ class _SingleRecordViewState extends State<SingleRecordView> {
               ),
             ),
             serviceRecordModel.location != null
-                ? Expanded(
-                    flex: 3,
-                    child: GoogleMap(
-                      markers: Set<Marker>.of([
-                        Marker(
-                            markerId: MarkerId('currentPosition'),
-                            position: LatLng(double.parse(latLong[0]),
-                                double.parse(latLong[0])),
-                            infoWindow:
-                                InfoWindow(title: 'The title of the marker'))
-                      ]),
-                      mapType: MapType.normal,
-                      initialCameraPosition:
-                          singleRecordViewModel.getCameraPosition(
-                              double.parse(latLong[0]),
-                              double.parse(latLong[0])),
-                      onMapCreated: (GoogleMapController controller) {
-                        singleRecordViewModel.controller.complete(controller);
-                      },
-                    ),
-                  )
+                ? Expanded(flex: 3, child: buildMapOnline(latLong))
                 : SizedBox(),
           ],
         );
@@ -367,5 +347,28 @@ class _SingleRecordViewState extends State<SingleRecordView> {
       },
       icon: Icon(Icons.arrow_back_ios),
     );
+  }
+
+  Widget buildMapOnline(List latLong) {
+    try {
+      return GoogleMap(
+        markers: Set<Marker>.of([
+          Marker(
+              markerId: MarkerId('currentPosition'),
+              position:
+                  LatLng(double.parse(latLong[0]), double.parse(latLong[0])),
+              infoWindow: InfoWindow(title: 'The title of the marker'))
+        ]),
+        mapType: MapType.normal,
+        initialCameraPosition: singleRecordViewModel.getCameraPosition(
+            double.parse(latLong[0]), double.parse(latLong[0])),
+        onMapCreated: (GoogleMapController controller) {
+          singleRecordViewModel.controller.complete(controller);
+        },
+      );
+    } catch (e) {
+      print(e);
+      return SizedBox();
+    }
   }
 }
