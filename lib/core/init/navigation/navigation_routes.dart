@@ -28,6 +28,8 @@ class NavigationRoutes {
         return normalNavigate(
           RecordsView(),
         );
+      //GETS ID VALUE FROM SELECTED CARD ON RECORDS VIEW
+      //ID USING FOR QUERY LOCAL DB TO GET DETAILS OF RECORD
       case NavigationConstants.SINGLE_RECORD_VIEW:
         return normalNavigate(SingleRecordView(), arguments: args);
       default:

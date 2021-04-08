@@ -18,6 +18,8 @@ class NetworkManager {
     _dio = Dio();
   }
 
+  ///ACCEPTS MODEL HAS JSON CONVERTIBLE ABILITIES [BaseModel]
+  ///Returns server response
   Future dioPost<T extends BaseModel>(
       {@required String baseURL,
       @required String endPoint,
@@ -43,6 +45,8 @@ class NetworkManager {
     }
   }
 
+  ///ACCEPTS MODEL HAS JSON CONVERTIBLE ABILITIES [BaseModel]
+  ///Returns server response
   Future dioGet<T extends BaseModel>(
       {@required String baseURL,
       @required String endPoint,
@@ -68,6 +72,8 @@ class NetworkManager {
     }
   }
 
+  ///ACCEPTS TYPE OF [FormData]
+  ///Returns server response
   Future dioPostForm<T extends FormData>(
       {@required String baseURL,
       @required String endPoint,
@@ -94,6 +100,7 @@ class NetworkManager {
   }
 }
 
+//IF DIO ERROR CONTAINS 401 ERROR USER LOGOUT AUTOMATICALLY
 checkAuthenticationEnded(DioError e) {
   if (e.error.toString().contains("401")) {
     NavigationService.instance

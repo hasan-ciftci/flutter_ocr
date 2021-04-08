@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 abstract class DatabaseProvider<T extends RecordModel> {
   Future open();
-  Future<List<T>> getRecordList(String username);
+  Future<List<T>> getRecordList();
   Future<bool> updateRecord(int id, T model);
   Future<bool> insertRecord(T model);
   Future<T> getItem(int id);

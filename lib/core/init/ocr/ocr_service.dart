@@ -16,6 +16,8 @@ class OcrService {
     textRecognizer = FirebaseVision.instance.textRecognizer();
   }
 
+  //EXTRACT TEXT FROM IMAGE
+  //USED FOR OFFLINE MOD
   Future<String> getTextFromImageOffline(File imageFile) async {
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromFile(imageFile);

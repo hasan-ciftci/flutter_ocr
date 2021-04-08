@@ -8,7 +8,8 @@ import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
 import 'package:flutter_ocr/core/init/network/network_manager.dart';
-import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
+import 'package:flutter_ocr/product/notifiers/connection_notifier.dart';
+import 'package:flutter_ocr/product/notifiers/record_notifier.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,8 @@ class RecordsViewModel = _RecordsViewModelBase with _$RecordsViewModel;
 abstract class _RecordsViewModelBase with Store {
   DatabaseService recordDataBaseProvider;
   RecordsService _recordsService;
+
+  ///Pagination page data
   @observable
   int page = 0;
   @observable
@@ -29,9 +32,21 @@ abstract class _RecordsViewModelBase with Store {
   @observable
   bool isLoading = false;
   @observable
-  ObservableList users = ObservableList();
+
+  ///All of the records comes from API call with pagination
+  ObservableList allRecords = ObservableList();
+
+  ///New records comes from API call with pagination
   @observable
   List newData = [];
+  @observable
+  int id;
+
+  @action
+  setCurrentId(int currentId) {
+    id = currentId;
+  }
+
   BuildContext myContext;
 
   init() {
@@ -43,15 +58,18 @@ abstract class _RecordsViewModelBase with Store {
     myContext = ctx;
   }
 
+  //Change loading status to show an loading animation
   @action
   startFetchingData() {
     isLoading = true;
   }
 
+  ///Sets new [page] for pagination data.
+  ///Updates [allRecords] with [newData]
   @action
   completeFetchingData() {
     isLoading = false;
-    users.addAll(newData);
+    allRecords.addAll(newData);
     page++;
   }
 
@@ -61,29 +79,27 @@ abstract class _RecordsViewModelBase with Store {
     final fetchedNewRecords = await _recordsService.fetchRecords(
         quantityOfData: 10, paginationPage: page);
     List recordData = fetchedNewRecords['data'];
-    print(
-        "recordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordData");
-    print(recordData);
-    print(
-        "recordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordDatarecordData");
     newData
       ..clear()
       ..addAll(recordData);
 
     completeFetchingData();
 
-    updateRecordNotifier(users);
+    updateRecordNotifierWithNewData(allRecords);
   }
 
-  updateRecordNotifier(List recordData) {
+  //Send list of record data from API response
+  updateRecordNotifierWithNewData(List recordData) {
     Provider.of<RecordNotifier>(myContext, listen: false).addRecord(recordData);
   }
 
-  Future<List<RecordModel>> getPlates() async {
-    var recordList = await recordDataBaseProvider.getRecordList("username");
+  //Returns list of local records
+  Future<List<RecordModel>> getLocalPlateRecords() async {
+    var recordList = await recordDataBaseProvider.getRecordList();
     return recordList;
   }
 
+  //Get first list of data with pagination
   Future<void> getFirstDataOnline() async {
     try {
       ConnectivityResult result =
@@ -103,9 +119,11 @@ abstract class _RecordsViewModelBase with Store {
     }
   }
 
+  ///Gets [List<RecordModel>] from local db and transforms it
+  ///[List<FormData>] type to sent API later
   transformOfflineRecordsToFormDataList(
       List<RecordModel> plates, Map<dynamic, dynamic> recordAndPlateMap) {
-    List<FormData> bulkRecordFormData = plates.map((e) {
+    List<FormData> apiReadyTransformedDataFromLocalDb = plates.map((e) {
       recordAndPlateMap.addAll({"plate-${e.timestamp}.jpg": "${e.id}"});
       return FormData.fromMap(
         {
@@ -116,9 +134,10 @@ abstract class _RecordsViewModelBase with Store {
         },
       );
     }).toList();
-    return bulkRecordFormData;
+    return apiReadyTransformedDataFromLocalDb;
   }
 
+  //If post request complete without an error deletes local record
   deleteTransferredOfflineRecords(List<FormData> bulkRecordFormData,
       Map<dynamic, dynamic> recordAndPlateMap) async {
     for (var element in bulkRecordFormData) {
@@ -133,19 +152,20 @@ abstract class _RecordsViewModelBase with Store {
         await DatabaseService.instance.removeItem(savedRecordId);
       } catch (e) {
         print(e);
-
-        ///Skip deleting local item due to an error.
+        //Skip deleting local item due to an error.
       }
     }
   }
 
-  Future<bool> checkIfOfflineRecordsExists() async {
+  ///Checks if there is any record on local db.
+  ///If exists send it to API then delete offline record
+  Future<bool> checkIfOfflineRecordsExistsAndSendToAPI() async {
     ConnectivityResult result =
         myContext.read<ConnectionNotifier>().connectivityResult;
     if (result == ConnectivityResult.none) {
       return false;
     } else {
-      var plates = await getPlates();
+      var plates = await getLocalPlateRecords();
       if (plates != null) {
         try {
           Map<dynamic, dynamic> recordAndPlateMap = Map();
@@ -169,14 +189,6 @@ abstract class _RecordsViewModelBase with Store {
         data: {"passedId": recordId});
     setCurrentId(recordId);
   }
-
-  @action
-  setCurrentId(int currentId) {
-    id = currentId;
-  }
-
-  @observable
-  int id;
 
   dispose() {
     Provider.of<RecordNotifier>(myContext, listen: false).clearList();

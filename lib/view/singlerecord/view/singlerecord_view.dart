@@ -6,8 +6,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/constants/style_constants.dart';
-import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/product/models/service_record_model.dart';
+import 'package:flutter_ocr/product/notifiers/connection_notifier.dart';
+import 'package:flutter_ocr/product/notifiers/record_notifier.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_ocr/view/singlerecord/viewmodel/singlerecord_view_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -65,14 +66,14 @@ class _SingleRecordViewState extends State<SingleRecordView> {
   }
 
   buildBodyOnline() {
-    ///Passing selected ID to provider for neglecting ID business in build method.
     Provider.of<RecordNotifier>(context, listen: false)
         .setSelectedIndex(singleRecordViewModel.recordId);
 
-    ///
     return Consumer<RecordNotifier>(
       builder: (BuildContext context, value, Widget child) {
         ServiceRecordModel serviceRecordModel = value.getRecord(value.index);
+        //Latitude longitude return as a string from API like : "35.000,35.000"
+        //Create a array contains [latitude,longitude]
         final latLong = serviceRecordModel.location?.split(",") ?? ["", ""];
         return Column(
           children: [
@@ -349,6 +350,7 @@ class _SingleRecordViewState extends State<SingleRecordView> {
     );
   }
 
+  /// Gets a array value taken from API in ARRAY(latitude,longitude) format.
   Widget buildMapOnline(List latLong) {
     try {
       return GoogleMap(

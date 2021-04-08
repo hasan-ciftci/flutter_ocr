@@ -1,6 +1,5 @@
-import 'package:connectivity/connectivity.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_ocr/product/models/service_record_model.dart';
+import 'package:flutter_ocr/product/notifiers/connection_notifier.dart';
+import 'package:flutter_ocr/product/notifiers/record_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -22,52 +21,4 @@ class ProviderService {
       create: (context) => ConnectionNotifier(),
     ),
   ];
-}
-
-class RecordNotifier extends ChangeNotifier {
-  List _recordList = [];
-  int _index;
-
-  addRecord(List<dynamic> recordList) {
-    _recordList
-      ..clear()
-      ..addAll(recordList);
-  }
-
-  ServiceRecordModel getRecord(int index) {
-    ServiceRecordModel serviceRecordModel =
-        ServiceRecordModel.fromJson(_recordList[index]);
-    return serviceRecordModel;
-  }
-
-  clearList() => _recordList.clear();
-
-  setSelectedIndex(int selectedIndex) => _index = selectedIndex;
-
-  getNextRecord() {
-    if (_index < _recordList.length - 1) {
-      _index++;
-      notifyListeners();
-    }
-  }
-
-  getPreviousRecord() {
-    if (_index > 0) {
-      _index--;
-      notifyListeners();
-    }
-  }
-
-  int get index => _index;
-}
-
-class ConnectionNotifier {
-  ConnectivityResult _connectivityResult;
-
-  ConnectivityResult get connectivityResult => _connectivityResult;
-
-  setConnectivityResult(ConnectivityResult con) {
-    print("Servis bağlantısı değişti :" + con.toString());
-    _connectivityResult = con;
-  }
 }

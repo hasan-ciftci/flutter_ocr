@@ -14,6 +14,7 @@ class PreferencesManager {
     });
   }
 
+  //INIT PREFERENCES IN MAIN TO CHECK IF TOKEN EXISTS
   static Future preferencesInit() async {
     instance._preferences ??= await SharedPreferences.getInstance();
   }

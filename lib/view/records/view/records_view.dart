@@ -4,7 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_ocr/core/components/custom_appbar.dart';
 import 'package:flutter_ocr/core/components/record_card.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
-import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
+import 'package:flutter_ocr/product/notifiers/connection_notifier.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +33,7 @@ class _RecordsViewState extends State<RecordsView> {
       backgroundColor: ColorConstants.ISPARK_WHITE,
       appBar: buildAppBar(),
       body: FutureBuilder(
-        future: recordsViewModel.checkIfOfflineRecordsExists(),
+        future: recordsViewModel.checkIfOfflineRecordsExistsAndSendToAPI(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return buildListView();
@@ -78,7 +78,7 @@ class _RecordsViewState extends State<RecordsView> {
       );
     } else {
       return FutureBuilder(
-        future: recordsViewModel.getPlates(),
+        future: recordsViewModel.getLocalPlateRecords(),
         builder:
             (BuildContext context, AsyncSnapshot<List<RecordModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -92,12 +92,12 @@ class _RecordsViewState extends State<RecordsView> {
   }
 
   Widget buildOnlineListView() {
-    return recordsViewModel.users.length != 0
+    return recordsViewModel.allRecords.length != 0
         ? ListView.builder(
-            itemCount: recordsViewModel.users.length + 1,
+            itemCount: recordsViewModel.allRecords.length + 1,
             padding: EdgeInsets.symmetric(vertical: 8.0),
             itemBuilder: (BuildContext context, int index) {
-              if (index == recordsViewModel.users.length) {
+              if (index == recordsViewModel.allRecords.length) {
                 return Observer(
                   builder: (BuildContext context) {
                     return _buildProgressIndicator();
@@ -137,9 +137,9 @@ class _RecordsViewState extends State<RecordsView> {
 
   RecordCard buildOnlineRecordCard(int index) {
     return RecordCard(
-        plate: recordsViewModel.users[index]['licensePlate'],
-        date: recordsViewModel.users[index]['createdOn'],
-        id: recordsViewModel.users[index]['id'],
+        plate: recordsViewModel.allRecords[index]['licensePlate'],
+        date: recordsViewModel.allRecords[index]['createdOn'],
+        id: recordsViewModel.allRecords[index]['id'],
         onPressed: () {
           recordsViewModel.navigateToSingleRecordViewPage(index);
         });
@@ -197,33 +197,3 @@ class _RecordsViewState extends State<RecordsView> {
     recordsViewModel.dispose();
   }
 }
-
-/*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                              35HNM96
-
-
-
-
-
-
-
-
-
-
-
-
-                               */

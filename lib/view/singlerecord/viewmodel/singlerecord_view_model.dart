@@ -8,7 +8,7 @@ import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobx/mobx.dart';
 
-import '../plate_image_guid_model.dart';
+import '../model/plate_image_guid_model.dart';
 
 part 'singlerecord_view_model.g.dart';
 
@@ -33,32 +33,38 @@ abstract class _SingleRecordViewModelBase with Store {
     );
   }
 
+  ///Gets value on build from widgets final parameter
   @observable
   int recordId;
 
+  ///Update [recordId]
   @action
   setRecordId(int currentId) {
     recordId = currentId;
   }
 
+  ///Get record from local data with [recordId]
   @action
   Future<RecordModel> getRecordInfo(int currentId) async {
     final record = await DatabaseService.instance.getItem(currentId);
     return record;
   }
 
+  ///Update [recordId] with smallest value bigger than current [recordId]
   @action
   getNext() async {
     var myMap = await DatabaseService.instance.getNextItem(recordId);
     recordId = myMap["id"];
   }
 
+  ///Update [recordId] with biggest value smaller than current [recordId]
   @action
   getPrevious() async {
     var myMap = await DatabaseService.instance.getPreviousItem(recordId);
     recordId = myMap["id"];
   }
 
+  ///Send an API request to get Image with link of record on online mod.
   Future<String> getImage(String base64ImgUrl) async {
     String imageGuid = base64ImgUrl.split("/").last.toUpperCase();
     PlateImageGuidModel plateImageGuidModel =

@@ -33,11 +33,13 @@ class LoginService implements ILoginService {
     return false;
   }
 
+  @override
   saveTokenToPreferences(String token) async {
     await PreferencesManager.instance
         .setStringValue(PreferencesKeys.TOKEN, token);
   }
 
+  @override
   saveUsernameToPreferences(String username) {
     PreferencesManager.instance
         .setStringValue(PreferencesKeys.USER_NAME, username);

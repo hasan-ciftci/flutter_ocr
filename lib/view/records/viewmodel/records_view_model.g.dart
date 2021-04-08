@@ -58,15 +58,15 @@ mixin _$RecordsViewModel on _RecordsViewModelBase, Store {
   final _$usersAtom = Atom(name: '_RecordsViewModelBase.users');
 
   @override
-  ObservableList<dynamic> get users {
+  ObservableList<dynamic> get allRecords {
     _$usersAtom.reportRead();
-    return super.users;
+    return super.allRecords;
   }
 
   @override
-  set users(ObservableList<dynamic> value) {
-    _$usersAtom.reportWrite(value, super.users, () {
-      super.users = value;
+  set allRecords(ObservableList<dynamic> value) {
+    _$usersAtom.reportWrite(value, super.allRecords, () {
+      super.allRecords = value;
     });
   }
 
@@ -142,7 +142,7 @@ mixin _$RecordsViewModel on _RecordsViewModelBase, Store {
 page: ${page},
 scrollController: ${scrollController},
 isLoading: ${isLoading},
-users: ${users},
+users: ${allRecords},
 newData: ${newData},
 id: ${id}
     ''';

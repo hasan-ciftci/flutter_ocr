@@ -5,12 +5,10 @@ import 'package:flutter_ocr/view/home/view/home_view.dart';
 import 'package:flutter_ocr/view/login/view/login_view.dart';
 
 import 'core/constants/color_constants.dart';
-import 'core/constants/color_constants.dart';
-import 'core/constants/color_constants.dart';
 import 'core/init/navigation/navigation_routes.dart';
 import 'core/init/navigation/navigation_service.dart';
 
-class FlutterOcr extends StatelessWidget {
+class IsparkScanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

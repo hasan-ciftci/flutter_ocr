@@ -13,11 +13,11 @@ import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
 import 'package:flutter_ocr/core/init/database/database_service.dart';
 import 'package:flutter_ocr/core/init/location/location_service.dart';
 import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
-import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
 import 'package:flutter_ocr/core/init/ocr/ocr_service.dart';
 import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
-import 'package:flutter_ocr/product/models/response/scan_response_model.dart';
+import 'package:flutter_ocr/product/models/scan_response_model.dart';
 import 'package:flutter_ocr/product/models/service_record_model.dart';
+import 'package:flutter_ocr/product/notifiers/connection_notifier.dart';
 import 'package:flutter_ocr/view/home/model/position_model.dart';
 import 'package:flutter_ocr/view/home/model/record_model.dart';
 import 'package:flutter_ocr/view/home/service/home_service.dart';
@@ -41,17 +41,37 @@ abstract class _HomeViewModelBase with Store {
   @observable
   File selectedImage;
   String _selectedImageBase64;
+
+  ///Periodically(30 secs.) updated Position
   Position myPosition;
   TextEditingController editingController;
   FocusNode focusNode;
   GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
 
   DatabaseService recordDataBaseProvider;
+
+  ///Service for API methods
   HomeService _homeService;
 
   CameraController controller;
   Future<void> initializeControllerFuture;
   ScanResponseModel _onlineScanResponseModel;
+
+  ///Status of if record is saving
+  @observable
+  bool isLoading = false;
+
+  ///Status of if image is scanning
+  @observable
+  bool isScanning = false;
+
+  ///Edited final text to ready to send API
+  @observable
+  String scannedText;
+
+  ///If location services available contains location informations
+  @observable
+  LocationModel locationModel;
 
   init() {
     editingController = TextEditingController();
@@ -86,6 +106,7 @@ abstract class _HomeViewModelBase with Store {
     scannedText = value;
   }
 
+  //If wifi/data connection exists work with API otherwise work with LocalDb
   Future<void> saveLicensePlate() async {
     ConnectivityResult result =
         myContext.read<ConnectionNotifier>().connectivityResult;
@@ -170,17 +191,6 @@ abstract class _HomeViewModelBase with Store {
     final bytes = await File(imageReadyToBeConverted.path).readAsBytes();
     _selectedImageBase64 = base64.encode(bytes);
   }
-
-  @observable
-  bool isLoading = false;
-  @observable
-  bool isScanning = false;
-
-  @observable
-  String scannedText;
-
-  @observable
-  LocationModel locationModel;
 
   @action
   void _changeLoadingStatus() {
@@ -287,6 +297,8 @@ abstract class _HomeViewModelBase with Store {
     _changeScanningStatus();
   }
 
+  ///If [myPosition] not null
+  ///returns a [LocationModel] created with [myPosition]
   Future _getPosition() async {
     var position;
     try {

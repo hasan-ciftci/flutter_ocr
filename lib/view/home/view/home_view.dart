@@ -8,7 +8,7 @@ import 'package:flutter_ocr/core/components/custom_elevated_button.dart';
 import 'package:flutter_ocr/core/components/scanner_bar_animation.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/core/init/connectivity/connectivity_service.dart';
-import 'package:flutter_ocr/core/init/notifier/provider_service.dart';
+import 'package:flutter_ocr/product/notifiers/connection_notifier.dart';
 import 'package:flutter_ocr/view/home/viewmodel/home_view_model.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -25,13 +25,14 @@ class _HomeViewState extends State<HomeView>
   HomeViewModel viewModel;
   AnimationController _animationController;
   bool _animationStopped = false;
-  String scanText = "Scan";
   bool scanning = false;
   MyConnectivity _connectivity = MyConnectivity.instance;
 
   @override
   void initState() {
     _connectivity.initialise();
+    //Listen wifi/data connection and set connectivity
+    //source.keys.toList()[0] => type of ConnectivityResult
     _connectivity.myStream.listen((source) {
       Provider.of<ConnectionNotifier>(context, listen: false)
           .setConnectivityResult(source.keys.toList()[0]);
@@ -261,7 +262,6 @@ class _HomeViewState extends State<HomeView>
                         setState(() {
                           _animationStopped = false;
                           scanning = true;
-                          scanText = "Stop";
                         });
 
                         viewModel.getImageFile();

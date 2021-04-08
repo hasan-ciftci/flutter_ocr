@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_ocr/core/components/rectangle_text_form_field.dart';
+import 'package:flutter_ocr/core/components/custom_text_form_field.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
 import 'package:flutter_ocr/view/login/viewmodel/login_view_model.dart';
 

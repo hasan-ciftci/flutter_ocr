@@ -34,7 +34,7 @@ class DatabaseService extends DatabaseProvider<RecordModel> {
   String columnBase64Image = "base64Image";
 
   @override
-  Future<List<RecordModel>> getRecordList(String username) async {
+  Future<List<RecordModel>> getRecordList() async {
     if (database != null) open();
     List<Map> recordsMap = await database.query(_tableName);
     return recordsMap.map((e) => RecordModel.fromJson(e)).toList();
