@@ -15,7 +15,7 @@
     <application
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="flutter_ocr">
+        android:label="İspark Scanner">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBHMee2UZzkTZC5KNic5wKwcABkjA9mlno"/>
         <meta-data
