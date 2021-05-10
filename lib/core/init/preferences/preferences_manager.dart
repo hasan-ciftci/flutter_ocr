@@ -1,4 +1,4 @@
-import 'package:flutter_ocr/core/constants/preferences_keys.dart';
+import 'package:flutter_ocr/core/constants/enums.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferencesManager {
@@ -14,6 +14,7 @@ class PreferencesManager {
     });
   }
 
+  //INIT PREFERENCES IN MAIN TO CHECK IF TOKEN EXISTS
   static Future preferencesInit() async {
     instance._preferences ??= await SharedPreferences.getInstance();
   }

@@ -3,12 +3,22 @@ import 'package:geolocator/geolocator.dart';
 class LocationService {
   static LocationService _instance;
 
+  static Position position;
+
   static LocationService get instance {
     _instance ??= LocationService._init();
     return _instance;
   }
 
   LocationService._init();
+
+  static Future firstLocationInit() async {
+    try {
+      position ??= await instance.determinePosition();
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future<Position> determinePosition() async {
     bool serviceEnabled;
@@ -31,6 +41,7 @@ class LocationService {
         return Future.error('Location permissions are denied');
       }
     }
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium);
   }
 }

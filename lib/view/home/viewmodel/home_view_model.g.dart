@@ -9,6 +9,36 @@ part of 'home_view_model.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$HomeViewModel on _HomeViewModelBase, Store {
+  final _$selectedImageAtom = Atom(name: '_HomeViewModelBase.selectedImage');
+
+  @override
+  File get selectedImage {
+    _$selectedImageAtom.reportRead();
+    return super.selectedImage;
+  }
+
+  @override
+  set selectedImage(File value) {
+    _$selectedImageAtom.reportWrite(value, super.selectedImage, () {
+      super.selectedImage = value;
+    });
+  }
+
+  final _$isLoadingAtom = Atom(name: '_HomeViewModelBase.isLoading');
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
   final _$isScanningAtom = Atom(name: '_HomeViewModelBase.isScanning');
 
   @override
@@ -36,21 +66,6 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   set scannedText(String value) {
     _$scannedTextAtom.reportWrite(value, super.scannedText, () {
       super.scannedText = value;
-    });
-  }
-
-  final _$imageAtom = Atom(name: '_HomeViewModelBase.image');
-
-  @override
-  File get image {
-    _$imageAtom.reportRead();
-    return super.image;
-  }
-
-  @override
-  set image(File value) {
-    _$imageAtom.reportWrite(value, super.image, () {
-      super.image = value;
     });
   }
 
@@ -88,11 +103,33 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
       ActionController(name: '_HomeViewModelBase');
 
   @override
-  void _changeScanningStatuts() {
+  void updateEditableText(dynamic value) {
     final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
-        name: '_HomeViewModelBase._changeScanningStatuts');
+        name: '_HomeViewModelBase.updateEditableText');
     try {
-      return super._changeScanningStatuts();
+      return super.updateEditableText(value);
+    } finally {
+      _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void _changeLoadingStatus() {
+    final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
+        name: '_HomeViewModelBase._changeLoadingStatus');
+    try {
+      return super._changeLoadingStatus();
+    } finally {
+      _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void _changeScanningStatus() {
+    final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
+        name: '_HomeViewModelBase._changeScanningStatus');
+    try {
+      return super._changeScanningStatus();
     } finally {
       _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
     }
@@ -110,22 +147,11 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   }
 
   @override
-  void _updateSelectedImage(File selectedImage) {
+  void prepareToNewFile() {
     final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
-        name: '_HomeViewModelBase._updateSelectedImage');
+        name: '_HomeViewModelBase.prepareToNewFile');
     try {
-      return super._updateSelectedImage(selectedImage);
-    } finally {
-      _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void _prepareToNewFile() {
-    final _$actionInfo = _$_HomeViewModelBaseActionController.startAction(
-        name: '_HomeViewModelBase._prepareToNewFile');
-    try {
-      return super._prepareToNewFile();
+      return super.prepareToNewFile();
     } finally {
       _$_HomeViewModelBaseActionController.endAction(_$actionInfo);
     }
@@ -134,9 +160,10 @@ mixin _$HomeViewModel on _HomeViewModelBase, Store {
   @override
   String toString() {
     return '''
+selectedImage: ${selectedImage},
+isLoading: ${isLoading},
 isScanning: ${isScanning},
 scannedText: ${scannedText},
-image: ${image},
 locationModel: ${locationModel}
     ''';
   }

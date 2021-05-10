@@ -1,4 +1,5 @@
-//TODO: THIS IS MOCK MODEL
+import 'package:flutter_ocr/product/models/pagination_model.dart';
+
 class LoginResponseModel {
   PaginationMetaData paginationMetaData;
   Data data;
@@ -16,7 +17,7 @@ class LoginResponseModel {
       this.exceptionCode});
 
   LoginResponseModel.fromJson(Map<String, dynamic> json) {
-    paginationMetaData = json['paginationMetaData'] != null
+    paginationMetaData != null
         ? new PaginationMetaData.fromJson(json['paginationMetaData'])
         : null;
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
@@ -28,38 +29,17 @@ class LoginResponseModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.paginationMetaData != null) {
-      data['paginationMetaData'] = this.paginationMetaData.toJson();
-    }
+    final Map<String, dynamic> paginationMetaData = new Map<String, dynamic>();
     if (this.data != null) {
       data['data'] = this.data.toJson();
+    }
+    if (this.paginationMetaData != null) {
+      data['paginationMetaData'] = this.paginationMetaData.toJson();
     }
     data['result'] = this.result;
     data['message'] = this.message;
     data['httpStatusCode'] = this.httpStatusCode;
     data['exceptionCode'] = this.exceptionCode;
-    return data;
-  }
-}
-
-class PaginationMetaData {
-  int totalCount;
-  int page;
-  int limit;
-
-  PaginationMetaData({this.totalCount, this.page, this.limit});
-
-  PaginationMetaData.fromJson(Map<String, dynamic> json) {
-    totalCount = json['totalCount'];
-    page = json['page'];
-    limit = json['limit'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['totalCount'] = this.totalCount;
-    data['page'] = this.page;
-    data['limit'] = this.limit;
     return data;
   }
 }

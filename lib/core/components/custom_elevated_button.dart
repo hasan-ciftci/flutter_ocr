@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final Function onPressed;
-  final String buttonText;
+  final Widget buttonText;
   final Color buttonColor;
   final Color buttonTextColor;
   final IconData icon;
@@ -34,12 +34,7 @@ class CustomElevatedButton extends StatelessWidget {
           SizedBox(
             width: 10,
           ),
-          Text(
-            buttonText,
-            style: TextStyle(
-                color: buttonTextColor ?? Colors.white,
-                fontWeight: FontWeight.bold),
-          ),
+          buttonText,
         ],
       ),
       onPressed: onPressed,

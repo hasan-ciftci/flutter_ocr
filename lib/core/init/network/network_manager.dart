@@ -1,34 +1,111 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_ocr/core/base/base_model.dart';
-import 'package:flutter_ocr/core/constants/api_constants.dart';
+import 'package:flutter_ocr/core/constants/enums.dart';
+import 'package:flutter_ocr/core/constants/navigation_root_name_constants.dart';
+import 'package:flutter_ocr/core/init/navigation/navigation_service.dart';
+import 'package:flutter_ocr/core/init/preferences/preferences_manager.dart';
 
 class NetworkManager {
-  static NetworkManager _instance;
+  static final NetworkManager _instance = NetworkManager._internal();
 
-  static NetworkManager get instance {
-    _instance ??= NetworkManager._init();
-    return _instance;
-  }
-
+  static NetworkManager get instance => _instance;
   Dio _dio;
 
-  NetworkManager._init() {
-    final baseOptions = BaseOptions(
-      baseUrl: ApiConstants.BASE_URL,
-    );
-
-    _dio = Dio(baseOptions);
+  NetworkManager._internal() {
+    _dio = Dio();
   }
 
-  Future dioPost<T extends BaseModel>(String endPoint, T model) async {
-    final response = await _dio.post(endPoint, data: model.toJson());
-    switch (response.statusCode) {
-      case HttpStatus.ok:
-        final responseBody = response.data;
-        return responseBody;
-      default:
+  ///ACCEPTS MODEL HAS JSON CONVERTIBLE ABILITIES [BaseModel]
+  ///Returns server response
+  Future dioPost<T extends BaseModel>(
+      {@required String baseURL,
+      @required String endPoint,
+      @required T model}) async {
+    try {
+      final response = await _dio.post(baseURL + endPoint,
+          data: model.toJson(),
+          options: Options(headers: {
+            "Authorization": "Bearer " +
+                PreferencesManager.instance
+                    .getStringValue(PreferencesKeys.TOKEN)
+          }));
+      switch (response.statusCode) {
+        case HttpStatus.ok:
+          final responseBody = response.data;
+          return responseBody;
+        default:
+      }
+    } catch (e) {
+      if (e is DioError) {
+        checkAuthenticationEnded(e);
+      }
     }
+  }
+
+  ///ACCEPTS MODEL HAS JSON CONVERTIBLE ABILITIES [BaseModel]
+  ///Returns server response
+  Future dioGet<T extends BaseModel>(
+      {@required String baseURL,
+      @required String endPoint,
+      @required T model}) async {
+    try {
+      final response = await _dio.get(baseURL + endPoint,
+          queryParameters: model.toJson(),
+          options: Options(headers: {
+            "Authorization": "Bearer " +
+                PreferencesManager.instance
+                    .getStringValue(PreferencesKeys.TOKEN)
+          }));
+      switch (response.statusCode) {
+        case HttpStatus.ok:
+          final responseBody = response.data;
+          return responseBody;
+        default:
+      }
+    } catch (e) {
+      if (e is DioError) {
+        checkAuthenticationEnded(e);
+      }
+    }
+  }
+
+  ///ACCEPTS TYPE OF [FormData]
+  ///Returns server response
+  Future dioPostForm<T extends FormData>(
+      {@required String baseURL,
+      @required String endPoint,
+      @required T file}) async {
+    try {
+      final response = await _dio.post(baseURL + endPoint,
+          data: file,
+          options: Options(headers: {
+            "Authorization": "Bearer " +
+                PreferencesManager.instance
+                    .getStringValue(PreferencesKeys.TOKEN)
+          }));
+      switch (response.statusCode) {
+        case HttpStatus.ok:
+          final responseBody = response.data;
+          return responseBody;
+        default:
+      }
+    } catch (e) {
+      if (e is DioError) {
+        checkAuthenticationEnded(e);
+      }
+    }
+  }
+}
+
+//IF DIO ERROR CONTAINS 401 ERROR USER LOGOUT AUTOMATICALLY
+checkAuthenticationEnded(DioError e) {
+  if (e.error.toString().contains("401")) {
+    NavigationService.instance
+        .navigateToPageClear(path: NavigationConstants.LOGIN_VIEW);
+
+    PreferencesManager.instance.clearAll();
   }
 }

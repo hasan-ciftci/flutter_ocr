@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_ocr/core/components/rectangle_text_form_field.dart';
-import 'package:flutter_ocr/core/constants/app_constants.dart';
+import 'package:flutter_ocr/core/components/custom_text_form_field.dart';
 import 'package:flutter_ocr/core/constants/color_constants.dart';
-import 'package:flutter_ocr/core/constants/style_constants.dart';
 import 'package:flutter_ocr/view/login/viewmodel/login_view_model.dart';
 
 import '../../../core/components/custom_elevated_button.dart';
@@ -25,34 +23,34 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(gradient: StyleConstants.kYellowLinearGradient),
-      child: Scaffold(
-          extendBodyBehindAppBar: false,
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.transparent,
-          appBar: buildAppBar(
-              appBarText: ApplicationConstants.COMPANY_NAME,
-              appBarTextColor: ColorConstants.ISPARK_YELLOW,
-              appBarColor: ColorConstants.ISPARK_BLACK),
-          body: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              double height = constraints.maxHeight;
-              return Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: SingleChildScrollView(
-                  reverse: true,
+    return Scaffold(
+        key: loginViewModel.scaffoldState,
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            double verticalPadding = constraints.maxHeight * .10;
+            double horizontalPadding = constraints.maxWidth * .04;
+            return Container(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: verticalPadding, horizontal: horizontalPadding),
+                child: Container(
+                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                    BoxShadow(
+                      blurRadius: 5,
+                      spreadRadius: 1,
+                      offset: Offset(0.0, 0.0),
+                      color: Colors.black12,
+                    ),
+                  ]),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                        vertical: horizontalPadding),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        SizedBox(height: height * .2),
                         buildTopic(),
-                        SizedBox(height: height * .05),
                         buildLoginForm(),
-                        SizedBox(height: height * .05),
                         Observer(
                           builder: (BuildContext context) {
                             return buildLoginButton();
@@ -62,43 +60,30 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-              );
-            },
-          )),
-    );
-  }
-
-  AppBar buildAppBar(
-      {@required String appBarText,
-      @required Color appBarTextColor,
-      @required Color appBarColor}) {
-    return AppBar(
-      backgroundColor: appBarColor,
-      centerTitle: true,
-      title: Text(
-        appBarText,
-        style: TextStyle(color: appBarTextColor),
-      ),
-    );
+              ),
+            );
+          },
+        ));
   }
 
   Column buildLoginButton() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        loginViewModel.isLoading ? buildLoadingAnimation() : SizedBox(),
         CustomElevatedButton(
           buttonColor: loginViewModel.isLoading
               ? Colors.black12
-              : ColorConstants.ISPARK_BLUE,
+              : ColorConstants.ISPARK_YELLOW,
           onPressed: loginViewModel.isLoading
               ? null
               : () {
                   print(loginViewModel.isLoading);
                   loginViewModel.logInUser();
                 },
-          buttonText: 'Giriş Yap',
-          buttonTextColor: ColorConstants.ISPARK_WHITE,
+          buttonText: loginViewModel.isLoading
+              ? buildLoadingAnimation()
+              : Text("Giriş Yap"),
+          buttonTextColor: ColorConstants.ISPARK_BLACK,
         ),
       ],
     );
@@ -109,31 +94,29 @@ class _LoginViewState extends State<LoginView> {
       key: loginViewModel.formState,
       child: Column(
         children: [
-          RectangleTextFormField(
+          CustomTextFormField(
             controller: loginViewModel.usernameController,
             isObscure: false,
             hintText: 'Kullanıcı Adı',
+            labelText: 'Kullanıcı Adı',
           ),
           SizedBox(
             height: 10,
           ),
-          RectangleTextFormField(
+          CustomTextFormField(
             controller: loginViewModel.passwordController,
             isObscure: true,
             hintText: 'Parola',
+            labelText: 'Parola',
           ),
         ],
       ),
     );
   }
 
-  Center buildTopic() => Center(
-          child: Text(
-        "Kullanıcı Giriş Formu",
-        style: TextStyle(
-            color: ColorConstants.ISPARK_BLACK, fontWeight: FontWeight.bold),
-        textScaleFactor: 1.4,
-      ));
+  Flexible buildTopic() => Flexible(
+      child: Image.asset('assets/images/logo.png'
+          ''));
 
   Row buildLoadingAnimation() {
     return Row(
@@ -143,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
           height: 20,
           width: 20,
           child: CircularProgressIndicator(
-            backgroundColor: ColorConstants.ISPARK_BLUE,
+            backgroundColor: ColorConstants.ISPARK_WHITE,
             valueColor:
                 AlwaysStoppedAnimation<Color>(ColorConstants.ISPARK_YELLOW),
           ),
